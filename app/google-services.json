@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "241936948544",
+    "firebase_url": "https://qdocker-4fd2f.firebaseio.com",
+    "project_id": "qdocker-4fd2f",
+    "storage_bucket": "qdocker-4fd2f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:241936948544:android:8e69d09ef4fe774a",
+        "android_client_info": {
+          "package_name": "com.voyager.qdocker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "241936948544-qgaj4ja3lnmpjb6jd5a14h5knv35krhc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.voyager.qdocker",
+            "certificate_hash": "f253c652613a4f90ab839af8c338182c32b11af8"
+          }
+        },
+        {
+          "client_id": "241936948544-p6iljiq3okkhe5pg2118reuem6s5b70b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAPTg-8Qj0qkQAWR6-MJprJMHojspLBUc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "241936948544-p6iljiq3okkhe5pg2118reuem6s5b70b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
