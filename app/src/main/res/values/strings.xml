@@ -1,6 +1,15 @@
 <resources>
     <string name="app_name">QDocker</string>
 
+
+    <!--Sign In Page -->
+    <string name="bottomDescription"><b>Why Sign Up?</b> \n By signing up with us, users will be able to follow and interact with their favorite churches better and will help us provide you with the best user experience.</string>
+    <string name="googleSignText">Sign in with Google</string>
+    <string name="snackErrorMsg">An account already exists with the same email address but different provider.</string>
+    <string name="snackOkBtn">ok</string>
+    <string name="sharedPrefFileName">UserDetails</string>
+
+
     <!-- QR Module-->
     <string name="scan_hint">Scan Barcode</string>
     <string name="flash_light">Flash Light</string>

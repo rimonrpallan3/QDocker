@@ -4,6 +4,12 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
+    <!--Splash Screen Color-->
+    <color name="white">#FFF</color>
+    <color name="black">#000000</color>
+    <color name="black_transparent">#70000000</color>
+
+
     <!--  QR Module-->
     <color name="viewfinder_frame">#66ffffff</color>
     <color name="viewfinder_laser">#ffff0000</color>

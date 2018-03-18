@@ -1,0 +1,141 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:gravity="center"
+    android:orientation="vertical">
+
+
+
+    <ImageView
+        android:id="@+id/splashscreen"
+        android:layout_width="@dimen/_200"
+        android:layout_height="@dimen/_200"
+        android:layout_gravity="top|center_horizontal"
+        android:src="@drawable/common_full_open_on_phone" />
+
+    <TextView
+        android:id="@+id/login_FaithApp_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/_50"
+        android:text="@string/app_name"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_24" />
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/_24"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_18"
+            android:background="@android:color/white">
+            <!--Google Login layout -->
+            <LinearLayout
+                android:id="@+id/btnSignInGoogle"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:gravity="center"
+                android:background="@android:color/white"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/imageview_google_icon"
+                    android:layout_width="@dimen/_40"
+                    android:layout_height="@dimen/_30"
+                    android:layout_gravity="start"
+                    android:contentDescription="@string/app_name"
+                    android:background="@android:color/white"
+                    android:src="@drawable/google_icon" />
+
+                <TextView
+                    android:id="@+id/textview_sign_in_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/_30"
+                    android:paddingRight="@dimen/_15"
+                    android:background="@android:color/white"
+                    android:textSize="@dimen/_12"
+                    android:text="@string/googleSignText"
+                    android:textColor="@android:color/black"
+                    android:gravity="center"
+                    android:textAllCaps="false" />
+
+
+
+            </LinearLayout>
+        </FrameLayout>
+
+
+
+        <!--Facebook Login layout -->
+       <!-- <LinearLayout
+            android:id="@+id/facebook_sign_in_button_layout"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:orientation="horizontal"
+            android:background="@android:color/white">
+
+            <ImageView
+                android:id="@+id/imageview_facebook_icon"
+                android:layout_width="@dimen/_40"
+                android:layout_height="@dimen/_30"
+                android:layout_gravity="start"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/fb_icon2" />
+            <TextView
+                android:id="@+id/textview_facebook_login_button"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_30"
+                android:paddingRight="@dimen/_10"
+                android:text="@string/facebook_sign_text"
+                android:textSize="@dimen/_12"
+                android:textColor="@android:color/black"
+                android:gravity="center"
+                android:textAllCaps="false" />
+        </LinearLayout>-->
+
+
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_24"
+        android:layout_marginRight="@dimen/_24"
+        android:layout_marginBottom="@dimen/_24"
+        android:layout_gravity="bottom|center"
+        android:layout_marginTop="@dimen/_70"
+        android:textSize="@dimen/_12"
+        android:alpha="0.8"
+        android:gravity="center"
+        android:text="@string/bottomDescription" />
+
+    <FrameLayout
+        android:id="@+id/loadingLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_transparent">
+
+        <pl.droidsonroids.gif.GifImageView
+            android:layout_width="@dimen/_24"
+            android:layout_height="@dimen/_24"
+            android:layout_gravity="center"
+            android:src="@drawable/gallery_gif_loader"/>
+
+    </FrameLayout>
+
+
+</FrameLayout>

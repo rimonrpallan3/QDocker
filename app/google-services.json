@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "241936948544-j7k4grkq3sbpu94bvq3vkeds43ef6beg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.voyager.qdocker",
+            "certificate_hash": "18b77c311b6a009a470003a97d77f03b3dd5fc6a"
+          }
+        },
+        {
           "client_id": "241936948544-qgaj4ja3lnmpjb6jd5a14h5knv35krhc.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
