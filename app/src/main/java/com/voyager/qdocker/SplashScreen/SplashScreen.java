@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.voyager.qdocker.Landing.LandingPage;
 import com.voyager.qdocker.R;
+import com.voyager.qdocker.SignInPage.SignInPage;
 import com.voyager.qdocker.SplashScreen.presenter.SplashPresenter;
 import com.voyager.qdocker.SplashScreen.view.ISplashView;
 import com.voyager.qdocker.custom.Helper;
@@ -60,9 +61,9 @@ public class SplashScreen extends AppCompatActivity implements ISplashView {
 
     @Override
     public void moveToSignUpLogin() {
-        /*Intent intent = new Intent(this, LoginSignUpPage.class);
+        Intent intent = new Intent(this, SignInPage.class);
         startActivity(intent);
-        finish();*/
+        finish();
     }
 
     @Override

@@ -13,19 +13,25 @@ public class UserDetails implements IUserDetials,Parcelable{
     String email;
     String userName;
     String userPhotoUrl;
+    Boolean status;
+    String usermob;
 
-    public UserDetails(String userId, String email, String userName, String userPhotoUrl) {
+    public UserDetails(Boolean status,String userId, String email, String userName, String userPhotoUrl, String usermob) {
+        this.status =status;
         this.userId = userId;
         this.email = email;
         this.userName = userName;
         this.userPhotoUrl = userPhotoUrl;
+        this.usermob = usermob;
     }
 
     protected UserDetails(Parcel in) {
+        status = in.readByte() != 0;
         userId = in.readString();
         email = in.readString();
         userName = in.readString();
         userPhotoUrl =in.readString();
+        usermob =in.readString();
     }
 
     public static final Creator<UserDetails> CREATOR = new Creator<UserDetails>() {
@@ -49,10 +55,33 @@ public class UserDetails implements IUserDetials,Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         System.out.println("writeToParcel to UserDetails ");
+        dest.writeByte((byte) (status ? 1 : 0));
         dest.writeString(userId);
         dest.writeString(email);
         dest.writeString(userName);
         dest.writeString(userPhotoUrl);
+        dest.writeString(usermob);
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
+    }
+
+    public static Creator<UserDetails> getCREATOR() {
+        return CREATOR;
+    }
+
+
+    public String getUsermob() {
+        return usermob;
+    }
+
+    public void setUsermob(String usermob) {
+        this.usermob = usermob;
     }
 
     public String getUserPhotoUrl() {

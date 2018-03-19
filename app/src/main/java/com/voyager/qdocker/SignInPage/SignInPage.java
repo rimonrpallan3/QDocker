@@ -47,6 +47,7 @@ public class SignInPage extends AppCompatActivity implements GoogleApiClient.OnC
     SharedPreferences sharedPrefs;
     SharedPreferences.Editor editor;
     UserDetails userDetails;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
 
     @Override
@@ -76,8 +77,24 @@ public class SignInPage extends AppCompatActivity implements GoogleApiClient.OnC
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        iSignInPresenter =new SignInPresenter(this,mAuth,this);
+        iSignInPresenter = new SignInPresenter(this,mAuth,this,mGoogleSignInClient);
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        iSignInPresenter.updateUI(currentUser);
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
 
@@ -91,7 +108,7 @@ public class SignInPage extends AppCompatActivity implements GoogleApiClient.OnC
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                iSignInPresenter.firebaseAuthWithGoogle(account);
+                iSignInPresenter.firebaseAuthWithAnonymous(account);
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
@@ -125,13 +142,6 @@ public class SignInPage extends AppCompatActivity implements GoogleApiClient.OnC
         finish();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        iSignInPresenter.updateUI(currentUser);
-    }
 
     @Override
     public void onClick(View v) {
