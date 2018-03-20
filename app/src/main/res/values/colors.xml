@@ -17,4 +17,7 @@
     <color name="result_view">#b0000000</color>
     <color name="possible_result_points">#c0ffff00</color>
 
+    <!--Admin Detail Add Page -->
+    <color name="hintHighLightText">#a5a5a5</color>
+
 </resources>

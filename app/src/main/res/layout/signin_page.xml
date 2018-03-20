@@ -127,7 +127,8 @@
         android:id="@+id/loadingLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black_transparent">
+        android:background="@color/black_transparent"
+        android:visibility="gone">
 
         <pl.droidsonroids.gif.GifImageView
             android:layout_width="@dimen/_24"

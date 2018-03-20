@@ -9,6 +9,10 @@
     <string name="snackOkBtn">ok</string>
     <string name="sharedPrefFileName">UserDetails</string>
 
+    <!--Admin Detail Add Page-->
+    <string name="submit">submit</string>
+    <string name="AdminQRCode">AdminQRCode</string>
+    <string name="AdminID">AdminID</string>
 
     <!-- QR Module-->
     <string name="scan_hint">Scan Barcode</string>

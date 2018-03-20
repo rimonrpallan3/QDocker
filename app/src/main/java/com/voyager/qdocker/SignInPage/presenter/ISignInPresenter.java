@@ -8,6 +8,6 @@ import com.google.firebase.auth.FirebaseUser;
  */
 
 public interface ISignInPresenter {
-    void firebaseAuthWithAnonymous(GoogleSignInAccount acct);
-    void updateUI(FirebaseUser user);
+    void firebaseAuthWithGoogle(GoogleSignInAccount acct, String currentUser);
+    void updateUI(FirebaseUser user,String currentUser);
 }

@@ -12,6 +12,7 @@ import android.telephony.TelephonyManager;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.voyager.qdocker.AdminUserPage.LoginChoicePage;
 import com.voyager.qdocker.Landing.LandingPage;
 import com.voyager.qdocker.R;
 import com.voyager.qdocker.SignInPage.SignInPage;
@@ -61,7 +62,7 @@ public class SplashScreen extends AppCompatActivity implements ISplashView {
 
     @Override
     public void moveToSignUpLogin() {
-        Intent intent = new Intent(this, SignInPage.class);
+        Intent intent = new Intent(this, LoginChoicePage.class);
         startActivity(intent);
         finish();
     }

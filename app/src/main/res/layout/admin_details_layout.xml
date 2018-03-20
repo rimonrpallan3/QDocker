@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/_40"
+        android:layout_marginRight="@dimen/_40"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/adminId"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="@dimen/_40"
+            android:hint="@string/AdminID"
+            android:textColorHint="@color/hintHighLightText"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:layout_marginBottom="@dimen/_10"/>
+
+        <EditText
+            android:id="@+id/adminQrCode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_10"
+            android:ellipsize="end"
+            android:hint="@string/AdminQRCode"
+            android:textColorHint="@color/hintHighLightText"
+            android:inputType="textPassword"
+            android:maxLines="1"
+            android:paddingLeft="@dimen/_40"
+            android:singleLine="true" />
+
+        <Button
+            android:id="@+id/btnSubmit"
+            android:text="@string/submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="?selectableItemBackground"
+            android:textAllCaps="false"
+            android:onClick="btnSubmit"/>
+
+    </LinearLayout>
+
+
+</FrameLayout>

@@ -23,8 +23,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
+import com.voyager.qdocker.AdminUserDetails.AdminUserDetails;
 import com.voyager.qdocker.Landing.LandingPage;
 import com.voyager.qdocker.R;
+import com.voyager.qdocker.SignInPage.model.AdminDetails;
 import com.voyager.qdocker.SignInPage.model.UserDetails;
 import com.voyager.qdocker.SignInPage.presenter.ISignInPresenter;
 import com.voyager.qdocker.SignInPage.presenter.SignInPresenter;
@@ -47,6 +49,10 @@ public class SignInPage extends AppCompatActivity implements GoogleApiClient.OnC
     SharedPreferences sharedPrefs;
     SharedPreferences.Editor editor;
     UserDetails userDetails;
+    String adminExtra = "";
+    String userExtra = "";
+    String currentUser = "";
+
     private FirebaseAuth.AuthStateListener mAuthListener;
 
 
@@ -58,6 +64,16 @@ public class SignInPage extends AppCompatActivity implements GoogleApiClient.OnC
         sharedPrefs = getSharedPreferences(getResources().getString(R.string.sharedPrefFileName),
                 Context.MODE_PRIVATE);
         editor = sharedPrefs.edit();
+
+        Intent intent = getIntent();
+        adminExtra = intent.getStringExtra("admin");
+        userExtra = intent.getStringExtra("user");
+        if(adminExtra!=null&& adminExtra.length()>0){
+            currentUser = adminExtra;
+        }else if(userExtra!=null&& userExtra.length()>0){
+            currentUser = userExtra;
+        }
+
 
         btnSignInGoogle = (LinearLayout) findViewById(R.id.btnSignInGoogle);
         loadingLayout = (FrameLayout) findViewById(R.id.loadingLayout);
@@ -84,9 +100,11 @@ public class SignInPage extends AppCompatActivity implements GoogleApiClient.OnC
     @Override
     public void onStart() {
         super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        iSignInPresenter.updateUI(currentUser);
-        mAuth.addAuthStateListener(mAuthListener);
+        FirebaseUser currentUserFireBase = mAuth.getCurrentUser();
+        iSignInPresenter.updateUI(currentUserFireBase,currentUser);
+        /*if (mAuthListener != null) {
+            mAuth.addAuthStateListener(mAuthListener);
+        }*/
     }
 
     @Override
@@ -108,7 +126,7 @@ public class SignInPage extends AppCompatActivity implements GoogleApiClient.OnC
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                iSignInPresenter.firebaseAuthWithAnonymous(account);
+                iSignInPresenter.firebaseAuthWithGoogle(account,currentUser);
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
@@ -138,6 +156,14 @@ public class SignInPage extends AppCompatActivity implements GoogleApiClient.OnC
     public void gotLanding() {
         Intent intent = new Intent(this, LandingPage.class);
         intent.putExtra("UserDetails", userDetails);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void goGetAdminDetails(AdminDetails adminDetails) {
+        Intent intent = new Intent(this, AdminUserDetails.class);
+        intent.putExtra("AdminDetails", adminDetails);
         startActivity(intent);
         finish();
     }

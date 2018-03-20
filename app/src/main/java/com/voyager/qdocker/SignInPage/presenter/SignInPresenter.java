@@ -1,7 +1,6 @@
 package com.voyager.qdocker.SignInPage.presenter;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -22,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.voyager.qdocker.R;
+import com.voyager.qdocker.SignInPage.model.AdminDetails;
 import com.voyager.qdocker.SignInPage.model.IUserDetials;
 import com.voyager.qdocker.SignInPage.model.UserDetails;
 import com.voyager.qdocker.SignInPage.view.ISignInView;
@@ -44,6 +44,7 @@ public class SignInPresenter implements ISignInPresenter{
     Activity activity;
     IUserDetials iUserDetials;
     UserDetails userDetails;
+    AdminDetails adminDetails;
     String urlPhoto;
     GoogleSignInClient mGoogleSignInClient;
     Boolean state = false;
@@ -72,6 +73,46 @@ public class SignInPresenter implements ISignInPresenter{
      * @param acct  Google's Sign in account.
      */
     // [START auth_with_google]
+    @Override
+    public void firebaseAuthWithGoogle(GoogleSignInAccount acct,final String currentUser) {
+        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+        // [START_EXCLUDE silent]
+        iSignInView.setLoader(View.VISIBLE);
+        // [END_EXCLUDE]
+
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithCredential:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            updateUI(user,currentUser);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            Snackbar.make(activity.findViewById(android.R.id.content),activity.getResources().getString(R.string.snackErrorMsg), Snackbar.LENGTH_SHORT).show();
+                           /* Snackbar.make(getParent().findViewById(android.R.id.content),
+                                    getResources().getString(R.string.snackErrorMsg),
+                                    Snackbar.LENGTH_INDEFINITE)
+                                    .setAction(getResources().getString(R.string.snackOkBtn), new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            btnSignInGoogle.setVisibility(View.GONE);
+                                        }
+                                    }).show();*/
+                            updateUI(null, currentUser);
+                        }
+
+                        // [START_EXCLUDE]
+                        iSignInView.setLoader(View.GONE);
+                        // [END_EXCLUDE]
+                    }
+                });
+    }
+   /* @Override
     public void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
         // [START_EXCLUDE silent]
@@ -99,7 +140,7 @@ public class SignInPresenter implements ISignInPresenter{
 
                     }
                 });
-    }
+    }*/
 
     public void startloginIn(){
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -198,9 +239,11 @@ public class SignInPresenter implements ISignInPresenter{
         };
     }
 
-    @Override
-    public void firebaseAuthWithAnonymous(final GoogleSignInAccount acct) {
+
+    public void firebaseAuthWithAnonymous(final GoogleSignInAccount acct ,final String currentUser) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+
+        mAuth.getCurrentUser();
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.getCurrentUser().linkWithCredential(credential)
                 .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
@@ -218,28 +261,43 @@ public class SignInPresenter implements ISignInPresenter{
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
                                         Log.d(TAG, "User account deleted.");
+                                        System.out.println("onComplete User account deleted.");
                                     }
                                 }
                             });
-                            firebaseAuthWithGoogle(acct);
+                            firebaseAuthWithGoogle(acct,currentUser);
                         }
 
                     }
                 });
+        mAuth.addAuthStateListener(mAuthListener);
     }
     // [END auth_with_google]
     @Override
-    public void updateUI(FirebaseUser user) {
+    public void updateUI(FirebaseUser user,String  currentUser) {
         iSignInView.setLoader(View.GONE);
         if (user != null) {
-            urlPhoto = String.valueOf(user.getPhotoUrl());
-            userDetails =new UserDetails(state, userid, userEmailAdress, userName, userImageUrl, userMob);
-            iSignInView.storeValuePref(userDetails);
-            iSignInView.gotLanding();
+            state = true;
+            userid = user.getUid();
+            userName = user.getDisplayName();
+            userEmailAdress = user.getEmail();
+            userImageUrl = String.valueOf(user.getPhotoUrl());
+            userMob = user.getPhoneNumber();
+            if(currentUser.equals("admin")){
+                adminDetails = new AdminDetails(state, userid, userEmailAdress, userName, userImageUrl, userMob);
+                iSignInView.goGetAdminDetails(adminDetails);
+            }else if(currentUser.equals("user")){
+                urlPhoto = String.valueOf(user.getPhotoUrl());
+                userDetails =new UserDetails(state, userid, userEmailAdress, userName, userImageUrl, userMob);
+                iSignInView.storeValuePref(userDetails);
+                iSignInView.gotLanding();
+            }
+
         } else {
             System.out.println("Something went wrong SignInPresenter updateUI");
         }
     }
+/*
 
     private void signOut() {
         // Firebase sign out
@@ -268,5 +326,6 @@ public class SignInPresenter implements ISignInPresenter{
                     }
                 });
     }
+*/
 
 }
