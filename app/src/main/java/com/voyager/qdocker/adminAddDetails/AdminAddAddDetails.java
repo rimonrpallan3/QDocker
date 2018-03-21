@@ -1,4 +1,4 @@
-package com.voyager.qdocker.adminDataPage;
+package com.voyager.qdocker.adminAddDetails;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,10 +10,10 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.gson.Gson;
+import com.voyager.qdocker.adminAddDetails.presenter.IAdminAddPresenter;
+import com.voyager.qdocker.adminAddDetails.view.IAdminAddView;
 import com.voyager.qdocker.adminLanding.AdminLanding;
-import com.voyager.qdocker.adminDataPage.presenter.AdminPresenter;
-import com.voyager.qdocker.adminDataPage.presenter.IAdminPresenter;
-import com.voyager.qdocker.adminDataPage.view.IAdminView;
+import com.voyager.qdocker.adminAddDetails.presenter.AdminAddPresenter;
 import com.voyager.qdocker.R;
 import com.voyager.qdocker.SignInPage.model.AdminDetails;
 import com.voyager.qdocker.custom.Helper;
@@ -22,11 +22,11 @@ import com.voyager.qdocker.custom.Helper;
  * Created by User on 20-Mar-18.
  */
 
-public class AdminDataPage extends AppCompatActivity implements View.OnClickListener, IAdminView {
+public class AdminAddAddDetails extends AppCompatActivity implements View.OnClickListener, IAdminAddView {
 
 
     Button btnSubmit;
-    IAdminPresenter iAdminPresenter;
+    IAdminAddPresenter iAdminAddPresenter;
     EditText adminId;
     EditText adminQrCode;
     AdminDetails adminDetails;
@@ -47,7 +47,7 @@ public class AdminDataPage extends AppCompatActivity implements View.OnClickList
         btnSubmit = (Button) findViewById(R.id.btnSubmit);
         adminId = (EditText) findViewById(R.id.adminId);
         adminQrCode = (EditText) findViewById(R.id.adminQrCode);
-        iAdminPresenter = new AdminPresenter(this);
+        iAdminAddPresenter = new AdminAddPresenter(this);
     }
 
     public void btnSubmit(View v){
@@ -55,7 +55,7 @@ public class AdminDataPage extends AppCompatActivity implements View.OnClickList
         edAdminId = adminId.getText().toString();
         edAdminQrCode = adminQrCode.getText().toString();
         if(edAdminId!=null && edAdminId.length()>0 && adminQrCode!=null && adminQrCode.length()>0){
-        //iAdminPresenter.storeMoveToLanding(adminId.getText().toString(), adminQrCode.getText().toString(),adminDetails);
+        //iAdminAddPresenter.storeMoveToLanding(adminId.getText().toString(), adminQrCode.getText().toString(),adminDetails);
             if (adminDetails != null) {
                 adminDetails.setAdminId(edAdminId);
                 adminDetails.setAdminQrCode(edAdminQrCode);
@@ -80,7 +80,7 @@ public class AdminDataPage extends AppCompatActivity implements View.OnClickList
         if(jsonString!=null) {
             editor.putString(getResources().getString(R.string.sharedPrefFileAdmin), jsonString);
             editor.commit();
-            System.out.println("-----------AdminDataPage storeValuePref "+jsonString);
+            System.out.println("-----------AdminAddAddDetails storeValuePref "+jsonString);
         }
     }
 

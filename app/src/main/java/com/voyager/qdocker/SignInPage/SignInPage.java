@@ -23,7 +23,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
-import com.voyager.qdocker.adminDataPage.AdminDataPage;
+import com.voyager.qdocker.adminAddDetails.AdminAddAddDetails;
 import com.voyager.qdocker.UserLanding.UserLanding;
 import com.voyager.qdocker.R;
 import com.voyager.qdocker.SignInPage.model.AdminDetails;
@@ -162,7 +162,7 @@ public class SignInPage extends AppCompatActivity implements GoogleApiClient.OnC
 
     @Override
     public void goGetAdminDetails(AdminDetails adminDetails) {
-        Intent intent = new Intent(this, AdminDataPage.class);
+        Intent intent = new Intent(this, AdminAddAddDetails.class);
         intent.putExtra("AdminDetails", adminDetails);
         startActivity(intent);
         finish();

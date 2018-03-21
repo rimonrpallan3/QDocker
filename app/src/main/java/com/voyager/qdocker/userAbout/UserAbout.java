@@ -1,32 +1,26 @@
-package com.voyager.qdocker.adminabout;
+package com.voyager.qdocker.userAbout;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.TextView;
 
-import com.voyager.qdocker.DemoGeneratorActivity;
-import com.voyager.qdocker.MainActivity;
 import com.voyager.qdocker.R;
-import com.voyager.qdocker.custom.qrmodule.activity.QrScannerActivity;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by rimon on 21-03-2018.
  */
 
-public class AdminAbout extends AppCompatActivity {
+public class UserAbout extends AppCompatActivity {
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.about_admin);
+        setContentView(R.layout.about_user);
         ButterKnife.bind(this);
     }
 

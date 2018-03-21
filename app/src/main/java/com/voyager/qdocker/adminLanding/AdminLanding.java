@@ -32,8 +32,7 @@ import com.squareup.picasso.Picasso;
 import com.voyager.qdocker.R;
 import com.voyager.qdocker.SignInPage.model.AdminDetails;
 import com.voyager.qdocker.adminProfile.AdminProfile;
-import com.voyager.qdocker.adminSettings.AdminSettings;
-import com.voyager.qdocker.adminabout.AdminAbout;
+import com.voyager.qdocker.adminAbout.AdminAbout;
 import com.voyager.qdocker.custom.CircleImageView;
 import com.voyager.qdocker.custom.Helper;
 import com.voyager.qdocker.loginchoice.LoginChoicePage;
@@ -56,7 +55,7 @@ public class AdminLanding extends AppCompatActivity {
     AdminDetails adminDetails;
 
     Activity activity;
-    public Toolbar toolbar;
+    public Toolbar adminToolbar;
 
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView navigationViewAdmin;
@@ -90,11 +89,11 @@ public class AdminLanding extends AppCompatActivity {
         }
 
         fireBaseToken = FirebaseInstanceId.getInstance().getToken();
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        adminToolbar = (Toolbar) findViewById(R.id.adminToolbar);
+        setSupportActionBar(adminToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
-        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
+        adminToolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
         landingAdminContainer = (FrameLayout) findViewById(R.id.landingAdminContainer);
 
 
@@ -121,7 +120,7 @@ public class AdminLanding extends AppCompatActivity {
         Gson gson = new Gson();
         String json = sharedPrefs.getString(getResources().getString(R.string.sharedPrefFileAdmin),null);
         if(json!=null){
-            System.out.println("-----------UserLanding uploadProfileName UserDetails" + json);
+            System.out.println("-----------AdminLanding getAdminDetails adminDetails" + json);
             adminDetails = gson.fromJson(json, AdminDetails.class);
             //emailAddress = userDetails.getEmail();
         }
@@ -268,7 +267,7 @@ public class AdminLanding extends AppCompatActivity {
                 switch (menuItem.getItemId()) {
 
                     //Replacing the main content with ContentFragment Which is our Inbox View;
-                    case R.id.updateProfile:
+                    case R.id.adminUpdateProfile:
                         Intent intent = new Intent(AdminLanding.this, AdminProfile.class);
                         intent.putExtra("AdminDetails", adminDetails);
                         startActivity(intent);
@@ -287,8 +286,8 @@ public class AdminLanding extends AppCompatActivity {
                         return true;
 
                     case R.id.adminLogout:
-                        editor = sharedPrefs.edit();
                         editor.remove(getResources().getString(R.string.sharedPrefFileAdmin));
+                        editor.clear();
                         editor.apply();
                         editor.commit();
                         intent = new Intent(AdminLanding.this, LoginChoicePage.class);

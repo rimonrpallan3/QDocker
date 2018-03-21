@@ -18,7 +18,7 @@
             android:orientation="vertical">
 
             <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
+                android:id="@+id/adminToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/colorPrimary"
@@ -51,7 +51,7 @@
             app:menu="@menu/nav_drawer_admin_item_list">
 
             <TextView
-                android:id="@+id/main_activity_version_name"
+                android:id="@+id/adminVersionName"
                 android:layout_width="@dimen/_100"
                 android:layout_height="@dimen/_30"
                 android:layout_gravity="bottom|center"

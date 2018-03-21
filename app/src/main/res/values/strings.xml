@@ -24,6 +24,13 @@
     <string name="adminAbout">About</string>
     <string name="adminLogout">Logout</string>
 
+    <!--Nav Drawer User list -->
+    <string name="userProfile">Profile</string>
+    <string name="userSettings">Settings</string>
+    <string name="userAbout">About</string>
+    <string name="userLogout">Logout</string>
+
+
     <!-- QR Module-->
     <string name="scan_hint">Scan Barcode</string>
     <string name="flash_light">Flash Light</string>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <FrameLayout
+        android:id="@+id/nav_header_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_200"
+        android:layout_alignParentTop="true"
+        android:background="@color/black_transparent"
+        android:padding="@dimen/_16">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <com.voyager.qdocker.custom.CircleImageView
+                android:id="@+id/customerProfileDrawerImg"
+                android:layout_width="@dimen/_80"
+                android:layout_height="@dimen/_80"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_15"
+                android:src="@drawable/profile" />
+
+            <TextView
+                android:id="@+id/customerProfileDrawerTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|bottom"
+                android:text="Guest User"
+                android:layout_marginTop="@dimen/_10"
+                android:textSize="@dimen/_16"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textColor="@color/black" />
+
+            <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="bottom"-->
+            <!--android:text="Not Signed In"-->
+            <!--android:textSize="@dimen/_10"-->
+            <!--android:textColor="@color/faith_navigation_drawer_sign_in_text_color"-->
+            <!--android:textAppearance="@style/TextAppearance.AppCompat.Body1" />-->
+        </LinearLayout>
+
+
+        <!--android:src="@drawable/discover_profile_picture"-->
+
+
+
+
+    </FrameLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/drawerList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nav_header_container"
+        android:layout_marginTop="20dp" />
+</LinearLayout>

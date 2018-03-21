@@ -5,10 +5,10 @@
     <group android:checkableBehavior="none">
 
         <item
-            android:id="@+id/adminUpdateProfile"
+            android:id="@+id/userUpdateProfile"
             android:checked="false"
             android:icon="@drawable/edit_icon"
-            android:title="@string/adminProfile" />
+            android:title="@string/userProfile" />
     </group>
     <group
         android:id="@+id/menuAbout"
@@ -16,10 +16,10 @@
 
 
         <item
-            android:id="@+id/adminAbout"
+            android:id="@+id/userAbout"
             android:checked="false"
             android:icon="@drawable/info_icon"
-            android:title="@string/adminAbout" />
+            android:title="@string/userAbout" />
     </group>
     <group
         android:id="@+id/menuLogout"
@@ -27,10 +27,10 @@
 
 
         <item
-            android:id="@+id/adminLogout"
+            android:id="@+id/userLogout"
             android:checked="false"
             android:icon="@drawable/ic_power_settings_new"
-            android:title="@string/adminLogout" />
+            android:title="@string/userLogout" />
     </group>
 
 </menu>
