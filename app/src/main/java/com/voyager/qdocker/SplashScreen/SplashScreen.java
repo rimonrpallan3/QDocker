@@ -4,23 +4,20 @@ package com.voyager.qdocker.SplashScreen;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
-import android.telephony.TelephonyManager;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.voyager.qdocker.AdminUserPage.LoginChoicePage;
-import com.voyager.qdocker.Landing.LandingPage;
+import com.voyager.qdocker.SignInPage.model.AdminDetails;
+import com.voyager.qdocker.SignInPage.model.UserDetails;
+import com.voyager.qdocker.adminLanding.AdminLanding;
+import com.voyager.qdocker.loginchoice.LoginChoicePage;
+import com.voyager.qdocker.UserLanding.UserLanding;
 import com.voyager.qdocker.R;
-import com.voyager.qdocker.SignInPage.SignInPage;
 import com.voyager.qdocker.SplashScreen.presenter.SplashPresenter;
 import com.voyager.qdocker.SplashScreen.view.ISplashView;
 import com.voyager.qdocker.custom.Helper;
-
-import static com.voyager.qdocker.custom.Helper.REQUEST_PHONE_STATE;
 
 
 /**
@@ -68,8 +65,17 @@ public class SplashScreen extends AppCompatActivity implements ISplashView {
     }
 
     @Override
-    public void moveToLanding() {
-        Intent intent = new Intent(this, LandingPage.class);
+    public void moveToUserLanding(UserDetails userDetails) {
+        Intent intent = new Intent(this, UserLanding.class);
+        intent.putExtra("UserDetails", userDetails);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void moveToAdminLanding(AdminDetails adminDetails) {
+        Intent intent = new Intent(this, AdminLanding.class);
+        intent.putExtra("AdminDetails", adminDetails);
         startActivity(intent);
         finish();
     }

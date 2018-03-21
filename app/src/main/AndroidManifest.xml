@@ -2,9 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.voyager.qdocker">
 
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.FLASHLIGHT"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -20,34 +21,62 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.voyager.qdocker.custom.qrmodule.activity.QrScannerActivity"
+        <activity
+            android:name="com.voyager.qdocker.custom.qrmodule.activity.QrScannerActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustPan|adjustResize"/>
-        <activity android:name="com.voyager.qdocker.DemoGeneratorActivity"
+            android:windowSoftInputMode="adjustPan|adjustResize" />
+        <activity
+            android:name="com.voyager.qdocker.DemoGeneratorActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustPan|adjustResize"/>
-        <activity android:name="com.voyager.qdocker.Landing.LandingPage"
+            android:windowSoftInputMode="adjustPan|adjustResize" />
+        <activity
+            android:name="com.voyager.qdocker.UserLanding.UserLanding"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustPan|adjustResize"/>
-        <activity android:name="com.voyager.qdocker.SignInPage.SignInPage"
+            android:windowSoftInputMode="adjustPan|adjustResize" />
+        <activity
+            android:name="com.voyager.qdocker.SignInPage.SignInPage"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustPan|adjustResize"/>
-        <activity android:name="com.voyager.qdocker.AdminUserDetails.AdminUserDetails"
+            android:windowSoftInputMode="adjustPan|adjustResize" />
+        <activity
+            android:name="com.voyager.qdocker.adminDataPage.AdminDataPage"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustPan|adjustResize"/>
-        <activity android:name="com.voyager.qdocker.AdminUserPage.LoginChoicePage"
+            android:windowSoftInputMode="adjustPan|adjustResize" />
+        <activity
+            android:name="com.voyager.qdocker.loginchoice.LoginChoicePage"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustPan|adjustResize"/>
-        <activity android:name="com.voyager.qdocker.MainActivity"
+            android:windowSoftInputMode="adjustPan|adjustResize" />
+        <activity
+        android:name="com.voyager.qdocker.adminLanding.AdminLanding"
+        android:screenOrientation="portrait"
+        android:theme="@style/AppTheme"
+        android:windowSoftInputMode="adjustPan|adjustResize" />
+        <activity
+            android:name="com.voyager.qdocker.adminabout.AdminAbout"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustPan|adjustResize"/>
+            android:windowSoftInputMode="adjustPan|adjustResize" />
+        <activity
+            android:name="com.voyager.qdocker.adminProfile.AdminProfile"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan|adjustResize" />
+        <activity
+            android:name="com.voyager.qdocker.adminSettings.AdminSettings"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan|adjustResize" />
+
+        <activity
+            android:name="com.voyager.qdocker.MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan|adjustResize" />
 
 
         <service android:name=".MyFirebaseMessagingService">

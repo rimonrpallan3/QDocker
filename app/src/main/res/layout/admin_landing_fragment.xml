@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <Button
+        android:id="@+id/scanQrCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10"
+        android:text="Scan Qr Code"
+        android:textAllCaps="false"
+        android:gravity="center"
+        android:layout_gravity="top|center"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycleViewDocList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/_70">
+
+    </android.support.v7.widget.RecyclerView>
+
+</FrameLayout>

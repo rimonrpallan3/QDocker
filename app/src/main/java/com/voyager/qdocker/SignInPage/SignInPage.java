@@ -23,8 +23,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
-import com.voyager.qdocker.AdminUserDetails.AdminUserDetails;
-import com.voyager.qdocker.Landing.LandingPage;
+import com.voyager.qdocker.adminDataPage.AdminDataPage;
+import com.voyager.qdocker.UserLanding.UserLanding;
 import com.voyager.qdocker.R;
 import com.voyager.qdocker.SignInPage.model.AdminDetails;
 import com.voyager.qdocker.SignInPage.model.UserDetails;
@@ -61,7 +61,7 @@ public class SignInPage extends AppCompatActivity implements GoogleApiClient.OnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signin_page);
 
-        sharedPrefs = getSharedPreferences(getResources().getString(R.string.sharedPrefFileName),
+        sharedPrefs = getSharedPreferences(getResources().getString(R.string.sharedPrefFileUserName),
                 Context.MODE_PRIVATE);
         editor = sharedPrefs.edit();
 
@@ -146,7 +146,7 @@ public class SignInPage extends AppCompatActivity implements GoogleApiClient.OnC
         String jsonString = gson.toJson(userDetails);
         //UserDetails user1 = gson.fromJson(jsonString,UserDetails.class);
         if(jsonString!=null) {
-            editor.putString(getResources().getString(R.string.sharedPrefFileName), jsonString);
+            editor.putString(getResources().getString(R.string.sharedPrefFileUserName), jsonString);
             editor.commit();
             System.out.println("-----------validateLoginDataBaseApi UserDetails"+jsonString);
         }
@@ -154,7 +154,7 @@ public class SignInPage extends AppCompatActivity implements GoogleApiClient.OnC
 
     @Override
     public void gotLanding() {
-        Intent intent = new Intent(this, LandingPage.class);
+        Intent intent = new Intent(this, UserLanding.class);
         intent.putExtra("UserDetails", userDetails);
         startActivity(intent);
         finish();
@@ -162,7 +162,7 @@ public class SignInPage extends AppCompatActivity implements GoogleApiClient.OnC
 
     @Override
     public void goGetAdminDetails(AdminDetails adminDetails) {
-        Intent intent = new Intent(this, AdminUserDetails.class);
+        Intent intent = new Intent(this, AdminDataPage.class);
         intent.putExtra("AdminDetails", adminDetails);
         startActivity(intent);
         finish();

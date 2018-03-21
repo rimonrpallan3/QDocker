@@ -9,6 +9,7 @@ import android.os.Looper;
 
 import com.google.gson.Gson;
 import com.voyager.qdocker.R;
+import com.voyager.qdocker.SignInPage.model.AdminDetails;
 import com.voyager.qdocker.SignInPage.model.UserDetails;
 import com.voyager.qdocker.SplashScreen.view.ISplashView;
 
@@ -16,15 +17,18 @@ import com.voyager.qdocker.SplashScreen.view.ISplashView;
  * Created by User on 8/28/2017.
  */
 
-public class SplashPresenter implements IConnectionStatus{
+public class SplashPresenter implements ISplashPresenter {
 
     Context context;
     ISplashView iSplashView;
     Activity activity;
-    String emailAddress;
+    String userEmailAddress;
+    String adminEmailAddress;
 
     SharedPreferences sharedPrefs;
     SharedPreferences.Editor editor;
+    AdminDetails adminDetails;
+    UserDetails userDetails;
 
     private int SPLASH_DISPLAY_LENGTH = 1000;
 
@@ -34,17 +38,29 @@ public class SplashPresenter implements IConnectionStatus{
         this.iSplashView = iSplashView;
         this.sharedPrefs = sharedPrefs;
         this.editor = editor;
-        emailAddress = getUserGsonInSharedPrefrences();
+        userEmailAddress = getUserGsonInSharedPrefrences();
+        adminEmailAddress = getAdminGsonInSharedPrefrences();
     }
 
     public String getUserGsonInSharedPrefrences(){
         String emailAddress ="";
         Gson gson = new Gson();
-        String json = sharedPrefs.getString(context.getResources().getString(R.string.sharedPrefFileName), null);
+        String json = sharedPrefs.getString(context.getResources().getString(R.string.sharedPrefFileUserName), null);
         if(json!=null){
-            UserDetails userDetails = gson.fromJson(json, UserDetails.class);
+            userDetails = gson.fromJson(json, UserDetails.class);
             emailAddress = userDetails.getEmail();
             System.out.println("--------- SplashPresenter getUserGsonInSharedPrefrences"+json);
+        }
+        return emailAddress;
+    }
+    public String getAdminGsonInSharedPrefrences(){
+        String emailAddress ="";
+        Gson gson = new Gson();
+        String json = sharedPrefs.getString(context.getResources().getString(R.string.sharedPrefFileAdmin), null);
+        if(json!=null){
+            adminDetails = gson.fromJson(json, AdminDetails.class);
+            emailAddress = adminDetails.getEmail();
+            System.out.println("--------- SplashPresenter getAdminGsonInSharedPrefrences"+json);
         }
         return emailAddress;
     }
@@ -55,8 +71,10 @@ public class SplashPresenter implements IConnectionStatus{
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                    if(emailAddress.length()>0){
-                        iSplashView.moveToLanding();
+                    if(userEmailAddress.length()>0){
+                        iSplashView.moveToUserLanding(userDetails);
+                    }else if(adminEmailAddress.length()>0){
+                        iSplashView.moveToAdminLanding(adminDetails);
                     }else{
                         iSplashView.moveToSignUpLogin();
                     }

@@ -7,12 +7,22 @@
     <string name="googleSignText">Sign in with Google</string>
     <string name="snackErrorMsg">An account already exists with the same email address but different provider.</string>
     <string name="snackOkBtn">ok</string>
-    <string name="sharedPrefFileName">UserDetails</string>
+    <string name="sharedPrefFileUserName">UserDetails</string>
+    <string name="sharedPrefFileAdmin">AdminDetails</string>
 
     <!--Admin Detail Add Page-->
     <string name="submit">submit</string>
-    <string name="AdminQRCode">AdminQRCode</string>
-    <string name="AdminID">AdminID</string>
+    <string name="AdminQRCode">organization Type</string>
+    <string name="AdminID">Reg No</string>
+            <!-- Navigation Drawer -->
+            <string name="drawer_open">Open navigation drawer</string>
+            <string name="drawer_close">Close navigation drawer</string>
+
+    <!--Nav Drawer Admin list -->
+    <string name="adminProfile">Profile</string>
+    <string name="adminSettings">Settings</string>
+    <string name="adminAbout">About</string>
+    <string name="adminLogout">Logout</string>
 
     <!-- QR Module-->
     <string name="scan_hint">Scan Barcode</string>
