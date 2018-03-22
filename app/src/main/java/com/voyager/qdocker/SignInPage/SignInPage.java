@@ -68,13 +68,15 @@ public class SignInPage extends AppCompatActivity implements GoogleApiClient.OnC
         Intent intent = getIntent();
         adminExtra = intent.getStringExtra("admin");
         userExtra = intent.getStringExtra("user");
+        System.out.println("SignInPage adminExtra : "+adminExtra);
+        System.out.println("SignInPage userExtra : "+userExtra);
         if(adminExtra!=null&& adminExtra.length()>0){
             currentUser = adminExtra;
         }else if(userExtra!=null&& userExtra.length()>0){
             currentUser = userExtra;
         }
 
-
+        System.out.println("SignInPage currentUser : "+currentUser);
         btnSignInGoogle = (LinearLayout) findViewById(R.id.btnSignInGoogle);
         loadingLayout = (FrameLayout) findViewById(R.id.loadingLayout);
 

@@ -17,8 +17,8 @@ public class LoginChoicePage extends AppCompatActivity implements View.OnClickLi
 
     LinearLayout admin;
     LinearLayout user;
-    String adminExtra = "admin";
-    String userExtra = "user";
+    String adminExtra = "";
+    String userExtra = "";
 
 
     @Override
@@ -34,6 +34,7 @@ public class LoginChoicePage extends AppCompatActivity implements View.OnClickLi
 
 
     public void adminSignIn(){
+        userExtra = "user";
         Intent intent = new Intent(this, SignInPage.class);
         intent.putExtra("admin", adminExtra);
         startActivity(intent);
@@ -41,6 +42,7 @@ public class LoginChoicePage extends AppCompatActivity implements View.OnClickLi
     }
 
     public void userSignIn(){
+        adminExtra = "admin";
         Intent intent = new Intent(this, SignInPage.class);
         intent.putExtra("user", userExtra);
         startActivity(intent);

@@ -107,10 +107,10 @@ public class UserLanding extends AppCompatActivity  {
         addDrawerItems();
         setupDrawer();
         //------------ End of Navigation Drawer-----------------------------
-        AdminLandingFragment adminLandingFragment = new AdminLandingFragment(this);
+        UserLandingFragment userLandingFragment = new UserLandingFragment(this);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.landingUserContainer, adminLandingFragment);
-        adminLandingFragment.setArguments(bundle);
+        fragmentTransaction.replace(R.id.landingUserContainer, userLandingFragment);
+        userLandingFragment.setArguments(bundle);
         fragmentTransaction.commit();
         int width = (getResources().getDisplayMetrics().widthPixels);
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) navigationViewUser.getLayoutParams();
@@ -288,8 +288,8 @@ public class UserLanding extends AppCompatActivity  {
                         return true;
 
                     case R.id.userLogout:
-                        editor = sharedPrefs.edit();
                         editor.remove(getResources().getString(R.string.sharedPrefFileUserName));
+                        editor.clear();
                         editor.apply();
                         editor.commit();
                         intent = new Intent(UserLanding.this, LoginChoicePage.class);

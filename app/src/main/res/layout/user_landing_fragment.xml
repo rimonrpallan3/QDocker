@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:gravity="center">
+
+    <Button
+        android:id="@+id/viewAppStoredDoc"
+        android:text="View Doc"
+        android:textAllCaps="false"
+        android:paddingLeft="@dimen/_10"
+        android:paddingRight="@dimen/_10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_12"/>
+    <Button
+        android:id="@+id/viewFireBaseStoredDoc"
+        android:text="Upload Doc"
+        android:textAllCaps="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
