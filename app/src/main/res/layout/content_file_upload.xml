@@ -33,8 +33,14 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:layout_weight="90">
+
+                <CheckBox
+                    android:id="@+id/checkBoxContentFileUpload"
+                    android:layout_marginLeft="@dimen/_10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
                 <TextView
                     android:id="@+id/contentFileName"
