@@ -18,6 +18,9 @@
             <string name="drawer_open">Open navigation drawer</string>
             <string name="drawer_close">Close navigation drawer</string>
 
+    <!--User View Doc -->
+    <string name="rationale_doc_picker">We need this pemission to read documents from device.</string>
+
     <!--Nav Drawer Admin list -->
     <string name="adminProfile">Profile</string>
     <string name="adminSettings">Settings</string>

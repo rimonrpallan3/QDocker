@@ -11,7 +11,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.voyager.qdocker.R;
+import com.voyager.qdocker.SignInPage.model.UserDetails;
 import com.voyager.qdocker.custom.qrmodule.activity.QrScannerActivity;
+import com.voyager.qdocker.userUploadDoc.UserUploadDoc;
+import com.voyager.qdocker.userViewDoc.UserViewDoc;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,6 +35,7 @@ public class UserLandingFragment extends Fragment {
     Button viewAppStoredDoc;
     @BindView(R.id.viewFireBaseStoredDoc)
     Button viewFireBaseStoredDoc;
+    UserDetails userDetails;
 
     public UserLandingFragment(Activity activity) {
         this.activity = activity;
@@ -50,6 +54,10 @@ public class UserLandingFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.user_landing_fragment, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         System.out.println("UserLandingFragment");
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            userDetails = bundle.getParcelable("UserDetails");
+        }
         return rootView;
     }
 
@@ -62,12 +70,19 @@ public class UserLandingFragment extends Fragment {
     @OnClick(R.id.viewAppStoredDoc)
     void viewAppStoredDoc() {
         System.out.println("UserLandingFragment viewAppStoredDoc");
+        Intent intent = new Intent(getActivity(), UserViewDoc.class);
+        intent.putExtra("UserDetails", userDetails);
+        startActivity(intent);
 
     }
 
     @OnClick(R.id.viewFireBaseStoredDoc)
     void viewFireBaseStoredDoc() {
         System.out.println("UserLandingFragment viewFireBaseStoredDoc");
+        Intent intent = new Intent(getActivity(), UserUploadDoc.class);
+        intent.putExtra("UserDetails", userDetails);
+        startActivity(intent);
+
     }
 
     @Override

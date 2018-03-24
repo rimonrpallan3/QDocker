@@ -1,81 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/contentFileUploadLayout"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FAFAFA">
 
-    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/tools"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/userViewDocToolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/_08"
-        android:layout_marginRight="@dimen/_10"
-        android:layout_marginLeft="@dimen/_10"
-        android:layout_marginTop="@dimen/_08"
-        app:cardCornerRadius="@dimen/_04"
-        app:cardElevation="0"
-        app:setCardBackgroundColor="@color/faith_background_card_color">
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:elevation="@dimen/_04"
+        android:visibility="visible" />
 
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="100">
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycleViewUserUploadDoc"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_alignParentLeft="true"
+        android:paddingLeft="@dimen/_06"
+        android:paddingRight="@dimen/_06"
+        android:layout_weight="80"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="0dp"
+        android:layout_weight="20">
+
+        <android.support.v7.widget.Toolbar
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/_10"
+            android:layout_height="@dimen/_30"
+            android:background="@color/colorPrimary"
+            android:elevation="@dimen/_04"
             android:layout_marginBottom="@dimen/_10"
-            android:gravity="center"
+            android:visibility="visible" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:orientation="horizontal"
-            android:weightSum="100">
+            android:text="UpLoad"
+            android:textAllCaps="false"/>
 
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="90">
-
-                <TextView
-                    android:id="@+id/contentFileName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/_10"
-                    android:layout_marginRight="@dimen/_08"
-                    android:text="TITLE"
-                    android:lines="1"
-                    android:ellipsize="end"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/_12" />
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/contentFileUploadBtn"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_marginLeft="@dimen/_08"
-                android:clickable="false"
-                android:gravity="right"
-                android:layout_weight="10">
-
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="@dimen/_12"
-                    android:background="@android:color/transparent"
-                    android:clickable="false"
-                    android:src="@drawable/block_quote"
-                    android:alpha="0.5"/>
-
-            </LinearLayout>
-
-
-        </LinearLayout>
-
-
-    </android.support.v7.widget.CardView>
-
+    </LinearLayout>
+</LinearLayout>
 </LinearLayout>

@@ -89,6 +89,7 @@ public class SignInPresenter implements ISignInPresenter{
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            System.out.println("Login Anonymous success: currentUser: "+currentUser);
                             updateUI(user,currentUser);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -290,6 +291,7 @@ public class SignInPresenter implements ISignInPresenter{
                 urlPhoto = String.valueOf(user.getPhotoUrl());
                 userDetails =new UserDetails(state, userid, userEmailAdress, userName, userImageUrl, userMob);
                 iSignInView.storeValuePref(userDetails);
+                System.out.println("SignInPresenter updateUI");
                 iSignInView.gotLanding();
             }
 
