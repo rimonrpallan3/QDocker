@@ -32,12 +32,11 @@ public class SplashPresenter implements ISplashPresenter {
 
     private int SPLASH_DISPLAY_LENGTH = 1000;
 
-    public SplashPresenter(Context context, ISplashView iSplashView, Activity activity, SharedPreferences sharedPrefs, SharedPreferences.Editor editor) {
+    public SplashPresenter(Context context, ISplashView iSplashView, Activity activity, SharedPreferences sharedPrefs) {
         this.activity = activity;
         this.context = context;
         this.iSplashView = iSplashView;
         this.sharedPrefs = sharedPrefs;
-        this.editor = editor;
         userEmailAddress = getUserGsonInSharedPrefrences();
         adminEmailAddress = getAdminGsonInSharedPrefrences();
     }

@@ -21,6 +21,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.voyager.qdocker.adminAddDetails.AdminAddAddDetails;
@@ -49,6 +51,7 @@ public class SignInPage extends AppCompatActivity implements GoogleApiClient.OnC
     SharedPreferences sharedPrefs;
     SharedPreferences.Editor editor;
     UserDetails userDetails;
+    AdminDetails adminDetails;
     String adminExtra = "";
     String userExtra = "";
     String currentUser = "";
@@ -95,7 +98,7 @@ public class SignInPage extends AppCompatActivity implements GoogleApiClient.OnC
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        iSignInPresenter = new SignInPresenter(this,mAuth,this,mGoogleSignInClient);
+        iSignInPresenter = new SignInPresenter(this,mAuth,this,mGoogleSignInClient,currentUser);
 
     }
 
@@ -155,11 +158,41 @@ public class SignInPage extends AppCompatActivity implements GoogleApiClient.OnC
     }
 
     @Override
+    public void storeValueAdminPref(AdminDetails adminDetails) {
+        this.adminDetails =adminDetails;
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(adminDetails);
+        //UserDetails user1 = gson.fromJson(jsonString,UserDetails.class);
+        if(jsonString!=null) {
+            editor.putString(getResources().getString(R.string.sharedPrefFileAdmin), jsonString);
+            editor.commit();
+            System.out.println("-----------validateLoginDataBaseApi UserDetails"+jsonString);
+        }
+    }
+
+    @Override
     public void gotLanding() {
         Intent intent = new Intent(this, UserLanding.class);
         intent.putExtra("UserDetails", userDetails);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void goSuddenLanding(Object object, String currentUser) {
+        if(currentUser.equals("admin")){
+            adminDetails = (AdminDetails) object;
+            Intent intent = new Intent(this, AdminAddAddDetails.class);
+            intent.putExtra("AdminDetails", adminDetails);
+            startActivity(intent);
+            finish();
+        }else if(currentUser.equals("user")){
+            userDetails = (UserDetails) object;
+            Intent intent = new Intent(this, UserLanding.class);
+            intent.putExtra("UserDetails", userDetails);
+            startActivity(intent);
+            finish();
+        }
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.voyager.qdocker.userViewDoc.adapter;
 
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,6 +19,7 @@ import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.voyager.qdocker.R;
 import com.voyager.qdocker.userViewDoc.model.DocList;
+import com.voyager.qdocker.userViewDoc.view.IUserViewDocView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,10 +38,11 @@ public class ListFileAdapter extends RecyclerView.Adapter<ListFileAdapter.MyView
     String time;
     String date;
     int userID;
+    IUserViewDocView iUserViewDocView;
 
-    public ListFileAdapter(ArrayList<DocList> docLists, Activity activity) {
+    public ListFileAdapter(ArrayList<DocList> docLists,IUserViewDocView iUserViewDocView) {
         this.docLists = docLists;
-        this.activity = activity;
+        this.iUserViewDocView = iUserViewDocView;
     }
 
     @Override
@@ -53,11 +56,21 @@ public class ListFileAdapter extends RecyclerView.Adapter<ListFileAdapter.MyView
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final DocList docList = docLists.get(position);
-
         Toast.makeText(activity, "U have entered onBindViewHolder " + position, Toast.LENGTH_SHORT).show();
         System.out.println("ListFileAdapter onBindViewHolder DocList file name: "+ docList.getDocFileName());
         System.out.println("ListFileAdapter onBindViewHolder DocList file path: "+ docList.getDocFileAbsolutePath());
         holder.contentFileName.setText(docList.getDocFileName());
+        holder.checkBoxContentFileUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.checkBoxContentFileUpload.setChecked(!holder.checkBoxContentFileUpload.isChecked());
+                if ( holder.checkBoxContentFileUpload.isChecked()) {
+                    iUserViewDocView.onItemCheck(docList);
+                } else {
+                    iUserViewDocView.onItemUncheck(docList);
+                }
+            }
+        });
     }
 
     @Override

@@ -24,6 +24,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.squareup.picasso.Callback;
@@ -64,7 +66,7 @@ public class UserLanding extends AppCompatActivity  {
     private DrawerLayout drawerLayoutUser;
     CircleImageView customerProfileDrawerImg;
     TextView customerProfileDrawerTitle;
-
+    private DatabaseReference mDatabase;
 
     FrameLayout landingUserContainer;
     ImageView choseTripBackPressUser;
@@ -90,6 +92,8 @@ public class UserLanding extends AppCompatActivity  {
             getUserSDetails();
         }
 
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         fireBaseToken = FirebaseInstanceId.getInstance().getToken();
         userToolbar = (Toolbar) findViewById(R.id.userToolbar);
         setSupportActionBar(userToolbar);
@@ -288,6 +292,7 @@ public class UserLanding extends AppCompatActivity  {
                         return true;
 
                     case R.id.userLogout:
+                        mDatabase.child("user").child(userDetails.getUserId()).child("status").setValue(false);
                         editor.remove(getResources().getString(R.string.sharedPrefFileUserName));
                         editor.clear();
                         editor.apply();

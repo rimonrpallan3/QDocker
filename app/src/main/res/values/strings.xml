@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">QDocker</string>
 
+    <!--Config File-->
+    <string name="fireBaseUrl">https://qdocker-4fd2f.firebaseio.com</string>
+    <string name="fireBaseStorageUrl">gs://qdocker-4fd2f.appspot.com</string>
+
 
     <!--Sign In Page -->
     <string name="bottomDescription"><b>Why Sign Up?</b> \n By signing up with us, users will be able to follow and interact with their favorite churches better and will help us provide you with the best user experience.</string>

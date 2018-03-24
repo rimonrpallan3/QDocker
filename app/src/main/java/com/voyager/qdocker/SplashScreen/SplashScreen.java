@@ -12,6 +12,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.voyager.qdocker.SignInPage.model.AdminDetails;
 import com.voyager.qdocker.SignInPage.model.UserDetails;
 import com.voyager.qdocker.adminLanding.AdminLanding;
+import com.voyager.qdocker.common.Config;
 import com.voyager.qdocker.loginchoice.LoginChoicePage;
 import com.voyager.qdocker.UserLanding.UserLanding;
 import com.voyager.qdocker.R;
@@ -39,12 +40,14 @@ public class SplashScreen extends AppCompatActivity implements ISplashView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_screen);
+        Config.FIREBASE_URL = getResources().getString(R.string.fireBaseUrl);
+        Config.FIREBASE_STORAGE_URL = getResources().getString(R.string.fireBaseStorageUrl);
         mAuth = FirebaseAuth.getInstance();
 
-        sharedPrefs = getSharedPreferences(Helper.UserDetails,
+        sharedPrefs = getSharedPreferences(getResources().getString(R.string.sharedPrefFileUserName),
                 Context.MODE_PRIVATE);
         editor = sharedPrefs.edit();
-        mPresenter = new SplashPresenter(this,this,this,sharedPrefs,editor);
+        mPresenter = new SplashPresenter(this,this,this,sharedPrefs);
         mPresenter.load();
         fireBaseToken = FirebaseInstanceId.getInstance().getToken();
         System.out.println("----------- onCreate ----------fireBaseToken: "+fireBaseToken);

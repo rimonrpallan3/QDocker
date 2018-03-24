@@ -10,6 +10,8 @@ import com.voyager.qdocker.SignInPage.model.UserDetails;
 public interface ISignInView {
     void setLoader(int visibility);
     void storeValuePref(UserDetails userDetails);
+    void storeValueAdminPref(AdminDetails adminDetails);
     void gotLanding();
+    void goSuddenLanding(Object object, String currentUser);
     void goGetAdminDetails(AdminDetails adminDetails);
 }

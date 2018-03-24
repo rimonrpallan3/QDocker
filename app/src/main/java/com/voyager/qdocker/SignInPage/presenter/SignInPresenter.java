@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -48,20 +49,23 @@ public class SignInPresenter implements ISignInPresenter{
     String urlPhoto;
     GoogleSignInClient mGoogleSignInClient;
     Boolean state = false;
-    String userid = "";
+    String userId = "";
     String userName = "";
     String userEmailAdress = "";
     String userImageUrl = "";
     String app_version = "";
     String userMob ="";
     Map<String, Object> current_app_version = new HashMap<>();
+    DatabaseReference mDatabase;
+    String currentUser="";
 
-
-    public SignInPresenter(ISignInView iSignInView, FirebaseAuth mAuth, Activity activity, GoogleSignInClient mGoogleSignInClient) {
+    public SignInPresenter(ISignInView iSignInView, FirebaseAuth mAuth, Activity activity, GoogleSignInClient mGoogleSignInClient, String currentUser) {
         this.iSignInView = iSignInView;
         this.mAuth = mAuth;
         this.activity = activity;
         this.mGoogleSignInClient = mGoogleSignInClient;
+        this.currentUser = currentUser;
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         startloginIn();
     }
 
@@ -144,100 +148,201 @@ public class SignInPresenter implements ISignInPresenter{
     }*/
 
     public void startloginIn(){
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                user = firebaseAuth.getCurrentUser();
-                if (user != null && !(user.isAnonymous())) {
-                    state = true;
-                    userid = user.getUid();
-                    userName = user.getDisplayName();
-                    userEmailAdress = user.getEmail();
-                    userImageUrl = String.valueOf(user.getPhotoUrl());
-                    userMob = user.getPhoneNumber();
 
-                    if(userImageUrl.equals("null"))
-                        userImageUrl ="";
+        if(currentUser.equals("admin")){
+            mAuthListener = new FirebaseAuth.AuthStateListener() {
+                @Override
+                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                    user = firebaseAuth.getCurrentUser();
+                    if (user != null && !(user.isAnonymous())) {
+                        state = true;
+                        userId = user.getUid();
+                        userName = user.getDisplayName();
+                        userEmailAdress = user.getEmail();
+                        userImageUrl = String.valueOf(user.getPhotoUrl());
+                        userMob = user.getPhoneNumber();
 
-                    FirebaseDatabase.getInstance()
-                            .getReference("users")
-                            .addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
-                                @Override
-                                public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
-                                    ArrayList<String> allusersList = new ArrayList<>();
-                                    for (com.google.firebase.database.DataSnapshot allusers : dataSnapshot.getChildren()){
-                                        allusersList.add(allusers.getKey());
-                                    }
+                        if(userImageUrl.equals("null"))
+                            userImageUrl ="";
 
-
-                                    if (allusersList.contains(userid)){
-                                        Map<String, Object> userInfo_map = new HashMap<>();
-                                        userInfo_map.put("name", userName);
-                                        userInfo_map.put("email", userEmailAdress);
-                                        userInfo_map.put("user_image", userImageUrl);
-                                        FirebaseDatabase.getInstance()
-                                                .getReference("users")
-                                                .child(userid)
-                                                .updateChildren(userInfo_map);
-
-                                        Map<String, Object> fcm_reg_token = new HashMap<>();
-                                        fcm_reg_token.put("fcm_reg_token", FirebaseInstanceId.getInstance().getToken());
-                                        FirebaseDatabase.getInstance().getReference("users")
-                                                .child(user.getUid()).updateChildren(fcm_reg_token);
-
-                                        try {
-                                            app_version = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0).versionName;
-                                        } catch (PackageManager.NameNotFoundException e) {
-                                            e.printStackTrace();
+                        FirebaseDatabase.getInstance()
+                                .getReference("admin")
+                                .addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
+                                        ArrayList<String> allusersList = new ArrayList<>();
+                                        for (com.google.firebase.database.DataSnapshot allusers : dataSnapshot.getChildren()){
+                                            allusersList.add(allusers.getKey());
                                         }
-                                        current_app_version.put("current_app_version", app_version);
-                                        FirebaseDatabase.getInstance().getReference("users")
-                                                .child(user.getUid()).updateChildren(current_app_version);
 
-                                        FirebaseMessaging.getInstance().unsubscribeFromTopic("developer");
-                                        userDetails = new UserDetails(state, userid, userEmailAdress, userName, userImageUrl, userMob);
-                                        iSignInView.storeValuePref(userDetails);
-                                    } else{
-                                        FirebaseDatabase.getInstance()
-                                                .getReference("users")
-                                                .child(userid)
-                                                .setValue(new UserDetails(state, userid, userEmailAdress, userName, userImageUrl, userMob))
-                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        Map<String, Object> fcm_reg_token = new HashMap<>();
-                                                        fcm_reg_token.put("fcm_reg_token", FirebaseInstanceId.getInstance().getToken());
-                                                        FirebaseDatabase.getInstance().getReference("users")
-                                                                .child(user.getUid()).updateChildren(fcm_reg_token);
 
-                                                        try {
-                                                            app_version = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0).versionName;
-                                                        } catch (PackageManager.NameNotFoundException e) {
-                                                            e.printStackTrace();
+                                        if (allusersList.contains(userId)){
+                                            Map<String, Object> userInfo_map = new HashMap<>();
+                                            userInfo_map.put("name", userName);
+                                            userInfo_map.put("email", userEmailAdress);
+                                            userInfo_map.put("user_image", userImageUrl);
+                                            FirebaseDatabase.getInstance()
+                                                    .getReference("admin")
+                                                    .child(userId)
+                                                    .updateChildren(userInfo_map);
+
+                                            Map<String, Object> fcm_reg_token = new HashMap<>();
+                                            fcm_reg_token.put("fcm_reg_token", FirebaseInstanceId.getInstance().getToken());
+                                            FirebaseDatabase.getInstance().getReference("admin")
+                                                    .child(user.getUid()).updateChildren(fcm_reg_token);
+
+                                            try {
+                                                app_version = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0).versionName;
+                                            } catch (PackageManager.NameNotFoundException e) {
+                                                e.printStackTrace();
+                                            }
+                                            current_app_version.put("current_app_version", app_version);
+                                            FirebaseDatabase.getInstance().getReference("admin")
+                                                    .child(user.getUid()).updateChildren(current_app_version);
+
+                                            FirebaseMessaging.getInstance().unsubscribeFromTopic("developer");
+                                            adminDetails = new AdminDetails(state, userId, userEmailAdress, userName, userImageUrl, userMob);
+                                            iSignInView.storeValueAdminPref(adminDetails);
+                                            iSignInView.goSuddenLanding(adminDetails,currentUser);
+                                        } else{
+                                            FirebaseDatabase.getInstance()
+                                                    .getReference("admin")
+                                                    .child(userId)
+                                                    .setValue(new UserDetails(state, userId, userEmailAdress, userName, userImageUrl, userMob))
+                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            Map<String, Object> fcm_reg_token = new HashMap<>();
+                                                            fcm_reg_token.put("fcm_reg_token", FirebaseInstanceId.getInstance().getToken());
+                                                            FirebaseDatabase.getInstance().getReference("admin")
+                                                                    .child(user.getUid()).updateChildren(fcm_reg_token);
+
+                                                            try {
+                                                                app_version = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0).versionName;
+                                                            } catch (PackageManager.NameNotFoundException e) {
+                                                                e.printStackTrace();
+                                                            }
+                                                            current_app_version.put("current_app_version", app_version);
+                                                            FirebaseDatabase.getInstance().getReference("admin")
+                                                                    .child(user.getUid()).updateChildren(current_app_version);
+
+                                                            FirebaseMessaging.getInstance().unsubscribeFromTopic("developer");
+
+                                                            adminDetails = new AdminDetails(state, userId, userEmailAdress, userName, userImageUrl, userMob);
+                                                            iSignInView.storeValueAdminPref(adminDetails);
+                                                            iSignInView.goSuddenLanding(adminDetails,currentUser);
                                                         }
-                                                        current_app_version.put("current_app_version", app_version);
-                                                        FirebaseDatabase.getInstance().getReference("users")
-                                                                .child(user.getUid()).updateChildren(current_app_version);
-
-                                                        FirebaseMessaging.getInstance().unsubscribeFromTopic("developer");
-
-                                                        userDetails = new UserDetails(state, userid, userEmailAdress, userName, userImageUrl, userMob);
-                                                        iSignInView.storeValuePref(userDetails);
-
-
-                                                    }
-                                                });
+                                                    });
+                                        }
                                     }
-                                }
 
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
 
-                                }
-                            });
+                                    }
+                                });
+                    }
                 }
-            }
-        };
+            };
+        }else if(currentUser.equals("user")){
+             mAuthListener = new FirebaseAuth.AuthStateListener() {
+                @Override
+                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                    user = firebaseAuth.getCurrentUser();
+                    if (user != null && !(user.isAnonymous())) {
+                        state = true;
+                        userId = user.getUid();
+                        userName = user.getDisplayName();
+                        userEmailAdress = user.getEmail();
+                        userImageUrl = String.valueOf(user.getPhotoUrl());
+                        userMob = user.getPhoneNumber();
+
+                        if(userImageUrl.equals("null"))
+                            userImageUrl ="";
+
+                        FirebaseDatabase.getInstance()
+                                .getReference("users")
+                                .addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
+                                        ArrayList<String> allusersList = new ArrayList<>();
+                                        for (com.google.firebase.database.DataSnapshot allusers : dataSnapshot.getChildren()){
+                                            allusersList.add(allusers.getKey());
+                                        }
+
+
+                                        if (allusersList.contains(userId)){
+                                            Map<String, Object> userInfo_map = new HashMap<>();
+                                            userInfo_map.put("name", userName);
+                                            userInfo_map.put("email", userEmailAdress);
+                                            userInfo_map.put("user_image", userImageUrl);
+                                            FirebaseDatabase.getInstance()
+                                                    .getReference("users")
+                                                    .child(userId)
+                                                    .updateChildren(userInfo_map);
+
+                                            Map<String, Object> fcm_reg_token = new HashMap<>();
+                                            fcm_reg_token.put("fcm_reg_token", FirebaseInstanceId.getInstance().getToken());
+                                            FirebaseDatabase.getInstance().getReference("users")
+                                                    .child(user.getUid()).updateChildren(fcm_reg_token);
+
+                                            try {
+                                                app_version = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0).versionName;
+                                            } catch (PackageManager.NameNotFoundException e) {
+                                                e.printStackTrace();
+                                            }
+                                            current_app_version.put("current_app_version", app_version);
+                                            FirebaseDatabase.getInstance().getReference("users")
+                                                    .child(user.getUid()).updateChildren(current_app_version);
+
+                                            FirebaseMessaging.getInstance().unsubscribeFromTopic("developer");
+                                            userDetails = new UserDetails(state, userId, userEmailAdress, userName, userImageUrl, userMob);
+                                            iSignInView.storeValuePref(userDetails);
+                                            iSignInView.goSuddenLanding(userDetails,currentUser);
+                                        } else{
+                                            FirebaseDatabase.getInstance()
+                                                    .getReference("users")
+                                                    .child(userId)
+                                                    .setValue(new UserDetails(state, userId, userEmailAdress, userName, userImageUrl, userMob))
+                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            Map<String, Object> fcm_reg_token = new HashMap<>();
+                                                            fcm_reg_token.put("fcm_reg_token", FirebaseInstanceId.getInstance().getToken());
+                                                            FirebaseDatabase.getInstance().getReference("users")
+                                                                    .child(user.getUid()).updateChildren(fcm_reg_token);
+
+                                                            try {
+                                                                app_version = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0).versionName;
+                                                            } catch (PackageManager.NameNotFoundException e) {
+                                                                e.printStackTrace();
+                                                            }
+                                                            current_app_version.put("current_app_version", app_version);
+                                                            FirebaseDatabase.getInstance().getReference("users")
+                                                                    .child(user.getUid()).updateChildren(current_app_version);
+
+                                                            FirebaseMessaging.getInstance().unsubscribeFromTopic("developer");
+
+                                                            userDetails = new UserDetails(state, userId, userEmailAdress, userName, userImageUrl, userMob);
+                                                            iSignInView.storeValuePref(userDetails);
+                                                            iSignInView.goSuddenLanding(userDetails,currentUser);
+
+                                                        }
+                                                    });
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+                    }
+                }
+            };
+        }
+
+
     }
 
 
@@ -279,17 +384,18 @@ public class SignInPresenter implements ISignInPresenter{
         iSignInView.setLoader(View.GONE);
         if (user != null) {
             state = true;
-            userid = user.getUid();
+            userId = user.getUid();
             userName = user.getDisplayName();
             userEmailAdress = user.getEmail();
             userImageUrl = String.valueOf(user.getPhotoUrl());
             userMob = user.getPhoneNumber();
             if(currentUser.equals("admin")){
-                adminDetails = new AdminDetails(state, userid, userEmailAdress, userName, userImageUrl, userMob);
+                adminDetails = new AdminDetails(state, userId, userEmailAdress, userName, userImageUrl, userMob);
                 iSignInView.goGetAdminDetails(adminDetails);
             }else if(currentUser.equals("user")){
                 urlPhoto = String.valueOf(user.getPhotoUrl());
-                userDetails =new UserDetails(state, userid, userEmailAdress, userName, userImageUrl, userMob);
+                userDetails =new UserDetails(state, userId, userEmailAdress, userName, userImageUrl, userMob);
+                mDatabase.child("user").child(userId).setValue(userDetails);
                 iSignInView.storeValuePref(userDetails);
                 System.out.println("SignInPresenter updateUI");
                 iSignInView.gotLanding();

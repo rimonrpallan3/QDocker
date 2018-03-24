@@ -24,6 +24,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.squareup.picasso.Callback;
@@ -62,7 +64,7 @@ public class AdminLanding extends AppCompatActivity {
     private DrawerLayout mDrawerLayoutAdmin;
     CircleImageView customerProfileDrawerImg;
     TextView customerProfileDrawerTitle;
-
+    private DatabaseReference mDatabase;
 
     FrameLayout landingAdminContainer;
     ImageView choseTripBackPressAdmin;
@@ -97,6 +99,7 @@ public class AdminLanding extends AppCompatActivity {
         landingAdminContainer = (FrameLayout) findViewById(R.id.landingAdminContainer);
 
 
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         //  Navigation Drawer
         navigationViewAdmin = (NavigationView) findViewById(R.id.navigationViewAdmin);
         mDrawerLayoutAdmin = (DrawerLayout) findViewById(R.id.drawerLayoutAdmin);
@@ -286,6 +289,7 @@ public class AdminLanding extends AppCompatActivity {
                         return true;
 
                     case R.id.adminLogout:
+                        mDatabase.child("admin").child(adminDetails.getUserId()).child("status").setValue(false);
                         editor.remove(getResources().getString(R.string.sharedPrefFileAdmin));
                         editor.clear();
                         editor.apply();

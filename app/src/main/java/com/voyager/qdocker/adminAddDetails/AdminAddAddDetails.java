@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 import com.voyager.qdocker.adminAddDetails.presenter.IAdminAddPresenter;
 import com.voyager.qdocker.adminAddDetails.view.IAdminAddView;
@@ -18,35 +20,40 @@ import com.voyager.qdocker.R;
 import com.voyager.qdocker.SignInPage.model.AdminDetails;
 import com.voyager.qdocker.custom.Helper;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by User on 20-Mar-18.
  */
 
 public class AdminAddAddDetails extends AppCompatActivity implements View.OnClickListener, IAdminAddView {
 
-
+    @BindView(R.id.btnSubmit)
     Button btnSubmit;
     IAdminAddPresenter iAdminAddPresenter;
+    @BindView(R.id.adminId)
     EditText adminId;
+    @BindView(R.id.adminQrCode)
     EditText adminQrCode;
     AdminDetails adminDetails;
     String  edAdminId="";
     String  edAdminQrCode="";
     SharedPreferences sharedPrefs;
     SharedPreferences.Editor editor;
+    DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.admin_details_layout);
-        sharedPrefs = getSharedPreferences(Helper.UserDetails,
+        ButterKnife.bind(this);
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        sharedPrefs = getSharedPreferences(getResources().getString(R.string.sharedPrefFileAdmin),
                 Context.MODE_PRIVATE);
         editor = sharedPrefs.edit();
         Intent intent = getIntent();
         adminDetails = (AdminDetails) intent.getParcelableExtra("AdminDetails");
-        btnSubmit = (Button) findViewById(R.id.btnSubmit);
-        adminId = (EditText) findViewById(R.id.adminId);
-        adminQrCode = (EditText) findViewById(R.id.adminQrCode);
         iAdminAddPresenter = new AdminAddPresenter(this);
     }
 
@@ -60,6 +67,7 @@ public class AdminAddAddDetails extends AppCompatActivity implements View.OnClic
                 adminDetails.setAdminId(edAdminId);
                 adminDetails.setAdminQrCode(edAdminQrCode);
                 storeValuePref(adminDetails);
+                mDatabase.child("admin").child(adminDetails.getUserId()).setValue(adminDetails);
                 Intent intent = new Intent(this, AdminLanding.class);
                 intent.putExtra("AdminDetails", adminDetails);
                 startActivity(intent);

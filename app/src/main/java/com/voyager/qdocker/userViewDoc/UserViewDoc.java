@@ -1,7 +1,9 @@
 package com.voyager.qdocker.userViewDoc;
 
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -17,11 +19,18 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.voyager.qdocker.R;
 import com.voyager.qdocker.SignInPage.model.UserDetails;
+import com.voyager.qdocker.common.Config;
 import com.voyager.qdocker.userViewDoc.adapter.ListFileAdapter;
 import com.voyager.qdocker.userViewDoc.model.DocList;
+import com.voyager.qdocker.userViewDoc.view.IUserViewDocView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -42,7 +51,7 @@ import pub.devrel.easypermissions.EasyPermissions;
  * Created by User on 22-Mar-18.
  */
 
-public class UserViewDoc extends AppCompatActivity implements EasyPermissions.PermissionCallbacks{
+public class UserViewDoc extends AppCompatActivity implements EasyPermissions.PermissionCallbacks, IUserViewDocView{
     UserDetails userDetails;
     Toolbar userViewDocToolbar;
     String fireBaseToken;
@@ -52,9 +61,12 @@ public class UserViewDoc extends AppCompatActivity implements EasyPermissions.Pe
     private ArrayList<String> docPaths = new ArrayList<>();
     private ArrayList<String> photoPaths = new ArrayList<>();
     private ArrayList<DocList> docLists;
+    private List<DocList> currentSelectedItems = new ArrayList<>();
     @BindView(R.id.recycleViewUserUploadDoc)
     RecyclerView recycleViewUserUploadDoc;
     ListFileAdapter listFileAdapter;
+    FirebaseStorage storage;
+    StorageReference storageRef;
 
 
     @Override
@@ -67,7 +79,8 @@ public class UserViewDoc extends AppCompatActivity implements EasyPermissions.Pe
         if (userDetails != null) {
             System.out.println("UserViewDoc -- UserDetails- name : " + userDetails.getUserName());
         }
-
+        storageRef = storage.getReference();
+        storage = FirebaseStorage.getInstance(Config.FIREBASE_STORAGE_URL);
         fireBaseToken = FirebaseInstanceId.getInstance().getToken();
         userViewDocToolbar = (Toolbar) findViewById(R.id.userViewDocToolbar);
         setSupportActionBar(userViewDocToolbar);
@@ -89,11 +102,8 @@ public class UserViewDoc extends AppCompatActivity implements EasyPermissions.Pe
                     ArrayList<File> inFiles = new ArrayList<>();
                     File directory;
                     for(int i = 0; i < docPaths.size(); i++) {
-                        System.out.println(docPaths.get(i).toString()); //prints element i
                         directory = new File(docPaths.get(i).toString());
                         inFiles.add(directory);
-                        //System.out.println("Files", "Size: "+ files.length);
-
                     }
                     for(File f:inFiles){
                         DocList docList = new DocList();
@@ -173,6 +183,79 @@ public class UserViewDoc extends AppCompatActivity implements EasyPermissions.Pe
                     .pickFile(this);
         }
     }
+    @OnClick(R.id.uploadDocToFireBase)
+    public void uploadDocToFireBase(){
+
+        if(currentSelectedItems!=null){
+            for(DocList f:currentSelectedItems){
+                UploadTask uploadTask;
+                Uri file = Uri.fromFile(new File(f.getDocFileAbsolutePath()));
+                StorageReference riversRef = storageRef.child(userDetails.getUserId()+"/doc/"+file.getLastPathSegment());
+                uploadTask = riversRef.putFile(file);
+
+                // Register observers to listen for when the download is done or if it fails
+                uploadTask.addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle unsuccessful uploads
+                        System.out.println("UserViewDoc uploadDocToFireBase onFailure");
+                    }
+                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        System.out.println("UserViewDoc uploadDocToFireBase onSuccess downloadUrl: "+downloadUrl);
+                    }
+                });
+            }
+
+        }else {
+            System.out.println("Please Select any one ");
+        }
+
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        // If there was an upload in progress, get its reference and create a new StorageReference
+        final String stringRef = savedInstanceState.getString("reference");
+        if (stringRef == null) {
+            return;
+        }
+        storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(stringRef);
+
+        // Find all UploadTasks under this StorageReference (in this example, there should be one)
+        List<UploadTask> tasks = storageRef.getActiveUploadTasks();
+        if (tasks.size() > 0) {
+            // Get the task monitoring the upload
+            UploadTask task = tasks.get(0);
+
+            // Add new listeners to the task using an Activity scope
+            task.addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot state) {
+                    handleSuccess(state); //call a user defined function to handle the event.
+                }
+            });
+        }
+    }
+
+    public void handleSuccess(UploadTask.TaskSnapshot state){
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // If there's an upload in progress, save the reference so you can query it later
+        if (storageRef != null) {
+            outState.putString("reference", storageRef.toString());
+        }
+    }
 
     @AfterPermissionGranted(RC_FILE_PICKER_PERM)
     public void pickDoc() {
@@ -197,5 +280,15 @@ public class UserViewDoc extends AppCompatActivity implements EasyPermissions.Pe
             default:
                 return false;
         }
+    }
+
+    @Override
+    public void onItemCheck(DocList docCheckedLists) {
+        currentSelectedItems.add(docCheckedLists);
+    }
+
+    @Override
+    public void onItemUncheck(DocList docUnCheckedLists) {
+        currentSelectedItems.remove(docUnCheckedLists);
     }
 }
