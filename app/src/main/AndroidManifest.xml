@@ -8,9 +8,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".SplashScreen.SplashScreen">
@@ -62,6 +62,11 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan|adjustResize" />
         <activity
+            android:name="com.voyager.qdocker.userAbout.UserAbout"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan|adjustResize" />
+        <activity
             android:name="com.voyager.qdocker.adminProfile.AdminProfile"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
@@ -78,6 +83,11 @@
             android:windowSoftInputMode="adjustPan|adjustResize" />
         <activity
             android:name="com.voyager.qdocker.userUploadDoc.UserUploadDoc"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan|adjustResize" />
+        <activity
+            android:name="com.voyager.qdocker.userProfile.UserProfile"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan|adjustResize" />

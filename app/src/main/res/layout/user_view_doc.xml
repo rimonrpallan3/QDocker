@@ -48,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="UpLoad"
+                android:text="Generate Qr Img"
                 android:textAllCaps="false" />
         </LinearLayout>
 

@@ -6,7 +6,7 @@
 
     <item
         android:id="@+id/pickDocs"
-        android:icon="@drawable/ic_build_white_36dp"
+        android:icon="@drawable/ic_attach_file"
         android:orderInCategory="100"
         android:title=""
         app:showAsAction="ifRoom"/>
