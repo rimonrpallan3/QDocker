@@ -7,4 +7,5 @@ package com.voyager.qdocker.common;
 public class Config {
     public static String FIREBASE_URL = "";
     public static String FIREBASE_STORAGE_URL = "";
+    public static final int STRORAGE_PERMISSION_REQUEST_CODE = 2;
 }

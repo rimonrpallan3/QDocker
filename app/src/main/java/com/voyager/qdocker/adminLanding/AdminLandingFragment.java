@@ -1,22 +1,45 @@
 package com.voyager.qdocker.adminLanding;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 import com.voyager.qdocker.R;
+import com.voyager.qdocker.adminLanding.adapter.ListQRDocsAdapter;
+import com.voyager.qdocker.adminLanding.model.QrResult;
+import com.voyager.qdocker.adminLanding.presenter.AdminLandingFrgPresenter;
+import com.voyager.qdocker.adminLanding.presenter.IAdminLandingFrgPresenter;
+import com.voyager.qdocker.adminLanding.view.IAdminLandingFrgView;
+import com.voyager.qdocker.common.Config;
 import com.voyager.qdocker.custom.qrmodule.activity.QrScannerActivity;
+import com.voyager.qdocker.userViewDoc.model.UploadDocs;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import pub.devrel.easypermissions.EasyPermissions;
 
 
 /**
@@ -24,13 +47,22 @@ import butterknife.Unbinder;
  */
 
 @SuppressLint("ValidFragment")
-public class AdminLandingFragment extends Fragment {
+public class AdminLandingFragment extends Fragment implements IAdminLandingFrgView {
 
     public String urlOutPut = "";
     Activity activity;
     @BindView(R.id.scanQrCode)
     Button scanQrCode;
+    @BindView(R.id.recycleQrList)
+    RecyclerView recycleQrList;
+    @BindView(R.id.qrLoader)
+    FrameLayout qrLoader;
     private Unbinder unbinder;
+    private DatabaseReference mDatabaseRef;
+    ListQRDocsAdapter listQRDocsAdapter;
+    ArrayList<UploadDocs> uploadDocsList;
+    IAdminLandingFrgPresenter iAdminLandingFrgPresenter;
+    String[] perms2 = {Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     public AdminLandingFragment(Activity activity) {
         this.activity = activity;
@@ -48,7 +80,10 @@ public class AdminLandingFragment extends Fragment {
         setHasOptionsMenu(true);
         View rootView = inflater.inflate(R.layout.admin_landing_fragment, container, false);
         unbinder = ButterKnife.bind(this, rootView);
+        iAdminLandingFrgPresenter = new AdminLandingFrgPresenter(this);
+        uploadDocsList = new ArrayList<>();
         System.out.println("AdminLandingFragment");
+
         return rootView;
     }
 
@@ -71,7 +106,34 @@ public class AdminLandingFragment extends Fragment {
             case QrScannerActivity.QR_REQUEST_CODE:
                 System.out.println("AdminLandingFragment QrScannerActivity");
                 if (data!= null) {
+                    qrLoader.setVisibility(View.VISIBLE);
                     urlOutPut = data.getExtras().getString(QrScannerActivity.QR_RESULT_STR);
+                    System.out.println("AdminLandingFragment QrScannerActivity urlOutPut: "+urlOutPut);
+                    Gson gson = new Gson();
+                    final QrResult qrResult = gson.fromJson(urlOutPut, QrResult.class);
+                    mDatabaseRef = FirebaseDatabase.getInstance().getReference(qrResult.getRefDabaseRef()).child(qrResult.getQrUserId()).child(qrResult.getInnerChild());
+                    System.out.println("AdminLandingFragment QrScannerActivity mDatabaseRef: "+mDatabaseRef.getRef());
+                    mDatabaseRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            uploadDocsList.clear();
+                            qrLoader.setVisibility(View.GONE);
+                            for (DataSnapshot objSnapshot: dataSnapshot.getChildren()) {
+                                UploadDocs uploadDocs = objSnapshot.getValue(UploadDocs.class);
+                                uploadDocsList.add(uploadDocs);
+                            }
+                            listQRDocsAdapter = new ListQRDocsAdapter(uploadDocsList,getActivity(),iAdminLandingFrgPresenter);
+                            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+                            recycleQrList.setLayoutManager(mLayoutManager);
+                            recycleQrList.setItemAnimator(new DefaultItemAnimator());
+                            recycleQrList.setAdapter(listQRDocsAdapter);
+                            recycleQrList.setItemAnimator(new DefaultItemAnimator());
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            qrLoader.setVisibility(View.GONE);
+                        }
+                    });
                     System.out.println("AdminLandingFragment QrScannerActivity urlOutPut: " + urlOutPut);
                 } else {
                     System.out.println("AdminLandingFragment QrScannerActivity null---: " + urlOutPut);
@@ -91,4 +153,22 @@ public class AdminLandingFragment extends Fragment {
     }
 
 
+    @Override
+    public void getStoragePermission(String file_url, final String file_name, final ImageButton downloadButton) {
+        try {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+                if (EasyPermissions.hasPermissions(activity, perms2)) {
+                    listQRDocsAdapter.qrFileDownload(file_url,file_name,downloadButton);
+                } else {
+                    // Do not have permissions, request them now
+                    EasyPermissions.requestPermissions(this, getString(R.string.storage_permission),
+                            Config.STRORAGE_PERMISSION_REQUEST_CODE, perms2);
+                }
+            } else {
+                listQRDocsAdapter.qrFileDownload(file_url,file_name,downloadButton);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

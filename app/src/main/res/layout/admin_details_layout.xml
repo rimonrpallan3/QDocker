@@ -18,6 +18,7 @@
             android:layout_height="match_parent"
             android:paddingLeft="@dimen/_40"
             android:hint="@string/AdminID"
+            android:inputType="textPassword"
             android:textColorHint="@color/hintHighLightText"
             android:ellipsize="end"
             android:maxLines="1"
@@ -32,7 +33,6 @@
             android:ellipsize="end"
             android:hint="@string/AdminQRCode"
             android:textColorHint="@color/hintHighLightText"
-            android:inputType="textPassword"
             android:maxLines="1"
             android:paddingLeft="@dimen/_40"
             android:singleLine="true" />

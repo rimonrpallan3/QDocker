@@ -56,7 +56,11 @@ public class UserLandingFragment extends Fragment {
         System.out.println("UserLandingFragment");
         Bundle bundle = this.getArguments();
         if (bundle != null) {
+            System.out.println("UserLandingFragment userDetails bundle: "+bundle.toString());
             userDetails = bundle.getParcelable("UserDetails");
+            System.out.println("UserLandingFragment userDetails Uid: "+userDetails.getUserId());
+        }else {
+            System.out.println("UserLandingFragment userDetails bundle: "+bundle);
         }
         return rootView;
     }

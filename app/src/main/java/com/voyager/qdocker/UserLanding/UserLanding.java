@@ -33,9 +33,6 @@ import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.voyager.qdocker.R;
 import com.voyager.qdocker.SignInPage.model.UserDetails;
-import com.voyager.qdocker.adminLanding.AdminLandingFragment;
-import com.voyager.qdocker.adminProfile.AdminProfile;
-import com.voyager.qdocker.adminAbout.AdminAbout;
 import com.voyager.qdocker.custom.CircleImageView;
 import com.voyager.qdocker.custom.Helper;
 import com.voyager.qdocker.loginchoice.LoginChoicePage;
@@ -84,9 +81,9 @@ public class UserLanding extends AppCompatActivity  {
         editor = sharedPrefs.edit();
         Intent intent = getIntent();
         bundle = new Bundle();
-        String hiddenBtn = intent.getStringExtra("btnHiddenBtn");
         userDetails = (UserDetails) intent.getParcelableExtra("UserDetails");
         if (userDetails != null) {
+            bundle.putParcelable("UserDetails", userDetails);
             System.out.println("UserLanding -- UserDetails- name : " + userDetails.getUserName());
         } else {
             getUserSDetails();

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -16,25 +17,40 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.voyager.qdocker.R;
 import com.voyager.qdocker.SignInPage.model.UserDetails;
+import com.voyager.qdocker.UserLanding.UserLanding;
+import com.voyager.qdocker.UserQrCodeGenrater.UserQrCodeRenerate;
+import com.voyager.qdocker.adminLanding.model.QrResult;
 import com.voyager.qdocker.common.Config;
+import com.voyager.qdocker.userAbout.UserAbout;
 import com.voyager.qdocker.userViewDoc.adapter.ListFileAdapter;
 import com.voyager.qdocker.userViewDoc.model.DocList;
+import com.voyager.qdocker.userViewDoc.model.UploadDocs;
+import com.voyager.qdocker.userViewDoc.presenter.IUserViewDocPresenter;
+import com.voyager.qdocker.userViewDoc.presenter.UserViewDocPresenter;
 import com.voyager.qdocker.userViewDoc.view.IUserViewDocView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -62,11 +78,18 @@ public class UserViewDoc extends AppCompatActivity implements EasyPermissions.Pe
     private ArrayList<String> photoPaths = new ArrayList<>();
     private ArrayList<DocList> docLists;
     private List<DocList> currentSelectedItems = new ArrayList<>();
+    private List<String> fileDoneList;
     @BindView(R.id.recycleViewUserUploadDoc)
     RecyclerView recycleViewUserUploadDoc;
+    @BindView(R.id.uploadLoader)
+    FrameLayout uploadLoader;
     ListFileAdapter listFileAdapter;
     FirebaseStorage storage;
     StorageReference storageRef;
+    DatabaseReference mDatabase;
+    IUserViewDocPresenter iUserViewDocPresenter;
+    String uploadId;
+    QrResult qrResult;
 
 
     @Override
@@ -79,14 +102,19 @@ public class UserViewDoc extends AppCompatActivity implements EasyPermissions.Pe
         if (userDetails != null) {
             System.out.println("UserViewDoc -- UserDetails- name : " + userDetails.getUserName());
         }
-        storageRef = storage.getReference();
-        storage = FirebaseStorage.getInstance(Config.FIREBASE_STORAGE_URL);
+        qrResult = new QrResult();
+        mDatabase = FirebaseDatabase.getInstance().getReference("user");
+        qrResult.setRefDabaseRef("user");
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReferenceFromUrl(Config.FIREBASE_STORAGE_URL);
         fireBaseToken = FirebaseInstanceId.getInstance().getToken();
         userViewDocToolbar = (Toolbar) findViewById(R.id.userViewDocToolbar);
         setSupportActionBar(userViewDocToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
         userViewDocToolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
+        fileDoneList = new ArrayList<>();
+        iUserViewDocPresenter = new UserViewDocPresenter(this);
     }
 
     @Override
@@ -152,7 +180,6 @@ public class UserViewDoc extends AppCompatActivity implements EasyPermissions.Pe
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
@@ -185,31 +212,50 @@ public class UserViewDoc extends AppCompatActivity implements EasyPermissions.Pe
     }
     @OnClick(R.id.uploadDocToFireBase)
     public void uploadDocToFireBase(){
-
+        System.out.println("Please uploadDocToFireBase in: ");
         if(currentSelectedItems!=null){
-            for(DocList f:currentSelectedItems){
+            mDatabase.child(userDetails.getUserId()).child("doc").removeValue();
+            System.out.println("Please uploadDocToFireBase currentSelectedItems: "+currentSelectedItems.size());
+            for(int i = 0; i < currentSelectedItems.size();i++){
+                uploadLoader.setVisibility(View.VISIBLE);
+                final DocList docList = currentSelectedItems.get(i);
+                System.out.println("Please uploadDocToFireBase currentSelectedItems: "+currentSelectedItems.get(i));
                 UploadTask uploadTask;
-                Uri file = Uri.fromFile(new File(f.getDocFileAbsolutePath()));
-                StorageReference riversRef = storageRef.child(userDetails.getUserId()+"/doc/"+file.getLastPathSegment());
+                Uri file = Uri.fromFile(new File(docList.getDocFileAbsolutePath()));
+                StorageReference riversRef = storageRef.child(userDetails.getUserId()).child("doc").child(file.getLastPathSegment());
                 uploadTask = riversRef.putFile(file);
-
+                fileDoneList.add("uploading");
+                final int finalI = i;
                 // Register observers to listen for when the download is done or if it fails
+                final int position = i;
                 uploadTask.addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
                         // Handle unsuccessful uploads
                         System.out.println("UserViewDoc uploadDocToFireBase onFailure");
+                        Snackbar.make(findViewById(android.R.id.content),getResources().getString(R.string.snackUploadUnSuccessMsg), Snackbar.LENGTH_SHORT).show();
+                        fileDoneList.remove(finalI);
+                        fileDoneList.add(finalI, "done");
+                        iUserViewDocPresenter.setUplodLoder(fileDoneList, position);
                     }
                 }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                         Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        UploadDocs uploadDocs = new UploadDocs(docList.getDocFileName(),taskSnapshot.getDownloadUrl().toString());
+                        uploadId = mDatabase.push().getKey();
+                        qrResult.setInnerChild("doc");
+                        qrResult.setQrUserId(userDetails.getUserId());
+
+                        mDatabase.child(userDetails.getUserId()).child("doc").child(uploadId).setValue(uploadDocs);
                         System.out.println("UserViewDoc uploadDocToFireBase onSuccess downloadUrl: "+downloadUrl);
+                        fileDoneList.remove(finalI);
+                        fileDoneList.add(finalI, "done");
+                        iUserViewDocPresenter.setUplodLoder(fileDoneList, position);
                     }
                 });
             }
-
         }else {
             System.out.println("Please Select any one ");
         }
@@ -253,7 +299,7 @@ public class UserViewDoc extends AppCompatActivity implements EasyPermissions.Pe
 
         // If there's an upload in progress, save the reference so you can query it later
         if (storageRef != null) {
-            outState.putString("reference", storageRef.toString());
+            outState.putString("user", storageRef.toString());
         }
     }
 
@@ -280,6 +326,32 @@ public class UserViewDoc extends AppCompatActivity implements EasyPermissions.Pe
             default:
                 return false;
         }
+    }
+
+    @Override
+    public void hideLoader(List<String> fileDoneList, int position) {
+        String fileDone = fileDoneList.get(position);
+        if(fileDone.equals("uploading")){
+            uploadLoader.setVisibility(View.VISIBLE);
+        } else if(fileDone.equals("done")){
+            Snackbar.make(findViewById(android.R.id.content),getResources().getString(R.string.snackUploadSuccessMsg), Snackbar.LENGTH_SHORT).show();
+            uploadLoader.setVisibility(View.GONE);
+            String databseRef = "user/"+userDetails.getUserId()+"/doc/"+uploadId;
+            iUserViewDocPresenter.generateQrCode(databseRef,userDetails);
+        }
+    }
+
+    @Override
+    public void generateQrCodeActivity(String databseRef, UserDetails userDetails) {
+        System.out.println("UserViewDoc generateQrCodeActivity  userDetails: "+userDetails.getUserId());
+        System.out.println("UserViewDoc generateQrCodeActivity  databseRef: "+databseRef);
+        Intent intent;
+        intent = new Intent(this, UserQrCodeRenerate.class);
+        intent.putExtra("databseRef",databseRef);
+        intent.putExtra("UserDetails", userDetails);
+        intent.putExtra("QrResult", qrResult);
+        startActivity(intent);
+        finish();
     }
 
     @Override

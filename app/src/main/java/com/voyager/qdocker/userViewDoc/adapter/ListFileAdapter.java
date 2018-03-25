@@ -56,14 +56,14 @@ public class ListFileAdapter extends RecyclerView.Adapter<ListFileAdapter.MyView
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final DocList docList = docLists.get(position);
-        Toast.makeText(activity, "U have entered onBindViewHolder " + position, Toast.LENGTH_SHORT).show();
+        System.out.println(" have entered onBindViewHolder : "+ position);
         System.out.println("ListFileAdapter onBindViewHolder DocList file name: "+ docList.getDocFileName());
         System.out.println("ListFileAdapter onBindViewHolder DocList file path: "+ docList.getDocFileAbsolutePath());
         holder.contentFileName.setText(docList.getDocFileName());
         holder.checkBoxContentFileUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.checkBoxContentFileUpload.setChecked(!holder.checkBoxContentFileUpload.isChecked());
+                //holder.checkBoxContentFileUpload.setChecked(!holder.checkBoxContentFileUpload.isChecked());
                 if ( holder.checkBoxContentFileUpload.isChecked()) {
                     iUserViewDocView.onItemCheck(docList);
                 } else {

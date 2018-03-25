@@ -11,20 +11,5 @@
         android:title=""
         app:showAsAction="ifRoom"/>
 
-    <item
-        android:id="@+id/action_clear"
-        android:icon="@drawable/ic_clear_white_36dp"
-        android:orderInCategory="101"
-        android:title=""
-        android:titleCondensed="@string/action_clear"
-        app:showAsAction="always"/>
-
-    <item
-        android:id="@+id/action_generate"
-        android:icon="@drawable/ic_slideshow_white_36dp"
-        android:orderInCategory="101"
-        android:title=""
-        android:titleCondensed="@string/action_generate"
-        app:showAsAction="always"/>
 
 </menu>
