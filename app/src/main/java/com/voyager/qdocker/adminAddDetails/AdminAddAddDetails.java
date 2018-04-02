@@ -18,7 +18,6 @@ import com.voyager.qdocker.adminLanding.AdminLanding;
 import com.voyager.qdocker.adminAddDetails.presenter.AdminAddPresenter;
 import com.voyager.qdocker.R;
 import com.voyager.qdocker.SignInPage.model.AdminDetails;
-import com.voyager.qdocker.custom.Helper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,13 +31,13 @@ public class AdminAddAddDetails extends AppCompatActivity implements View.OnClic
     @BindView(R.id.btnSubmit)
     Button btnSubmit;
     IAdminAddPresenter iAdminAddPresenter;
-    @BindView(R.id.adminId)
-    EditText adminId;
-    @BindView(R.id.adminQrCode)
-    EditText adminQrCode;
+    @BindView(R.id.adminRegNo)
+    EditText adminRegNo;
+    @BindView(R.id.adminQrgType)
+    EditText adminQrgType;
     AdminDetails adminDetails;
-    String  edAdminId="";
-    String  edAdminQrCode="";
+    String edAdminRegNo ="";
+    String edAdminQrgType ="";
     SharedPreferences sharedPrefs;
     SharedPreferences.Editor editor;
     DatabaseReference mDatabase;
@@ -59,13 +58,13 @@ public class AdminAddAddDetails extends AppCompatActivity implements View.OnClic
 
     public void btnSubmit(View v){
         btnSubmit.setEnabled(false);
-        edAdminId = adminId.getText().toString();
-        edAdminQrCode = adminQrCode.getText().toString();
-        if(edAdminId!=null && edAdminId.length()>0 && adminQrCode!=null && adminQrCode.length()>0){
-        //iAdminAddPresenter.storeMoveToLanding(adminId.getText().toString(), adminQrCode.getText().toString(),adminDetails);
+        edAdminRegNo = adminRegNo.getText().toString();
+        edAdminQrgType = adminQrgType.getText().toString();
+        if(edAdminRegNo !=null && edAdminRegNo.length()>0 && adminQrgType !=null && adminQrgType.length()>0){
+        //iAdminAddPresenter.storeMoveToLanding(adminRegNo.getText().toString(), adminQrgType.getText().toString(),adminDetails);
             if (adminDetails != null) {
-                adminDetails.setAdminId(edAdminId);
-                adminDetails.setAdminQrCode(edAdminQrCode);
+                adminDetails.setAdminRegNo(edAdminRegNo);
+                adminDetails.setAdminQrgType(edAdminQrgType);
                 storeValuePref(adminDetails);
                 mDatabase.child("admin").child(adminDetails.getUserId()).setValue(adminDetails);
                 Intent intent = new Intent(this, AdminLanding.class);
@@ -74,8 +73,8 @@ public class AdminAddAddDetails extends AppCompatActivity implements View.OnClic
                 finish();
             }
         }else {
-            adminId.setText("");
-            adminQrCode.setText("");
+            adminRegNo.setText("");
+            adminQrgType.setText("");
         }
 
     }

@@ -15,16 +15,18 @@ public class AdminDetails implements Parcelable {
     String userPhotoUrl;
     Boolean status;
     String usermob;
-    String adminId;
-    String adminQrCode;
+    String adminRegNo;
+    String adminQrgType;
 
-    public AdminDetails(Boolean status, String userId, String email, String userName, String userPhotoUrl, String usermob) {
+    public AdminDetails(Boolean status, String userId, String email, String userName, String userPhotoUrl, String usermob,String adminRegNo, String adminQrgType) {
         this.status = status;
         this.userId = userId;
         this.email = email;
         this.userName = userName;
         this.userPhotoUrl = userPhotoUrl;
         this.usermob = usermob;
+        this.adminRegNo = adminRegNo;
+        this.adminQrgType = adminQrgType;
     }
 
     protected AdminDetails(Parcel in) {
@@ -34,8 +36,8 @@ public class AdminDetails implements Parcelable {
         userName = in.readString();
         userPhotoUrl = in.readString();
         usermob = in.readString();
-        adminId = in.readString();
-        adminQrCode = in.readString();
+        adminRegNo = in.readString();
+        adminQrgType = in.readString();
     }
 
     public static final Creator<AdminDetails> CREATOR = new Creator<AdminDetails>() {
@@ -65,28 +67,28 @@ public class AdminDetails implements Parcelable {
         dest.writeString(userName);
         dest.writeString(userPhotoUrl);
         dest.writeString(usermob);
-        dest.writeString(adminId);
-        dest.writeString(adminQrCode);
+        dest.writeString(adminRegNo);
+        dest.writeString(adminQrgType);
     }
 
     public Boolean getStatus() {
         return status;
     }
 
-    public String getAdminId() {
-        return adminId;
+    public String getAdminRegNo() {
+        return adminRegNo;
     }
 
-    public void setAdminId(String adminId) {
-        this.adminId = adminId;
+    public void setAdminRegNo(String adminRegNo) {
+        this.adminRegNo = adminRegNo;
     }
 
-    public String getAdminQrCode() {
-        return adminQrCode;
+    public String getAdminQrgType() {
+        return adminQrgType;
     }
 
-    public void setAdminQrCode(String adminQrCode) {
-        this.adminQrCode = adminQrCode;
+    public void setAdminQrgType(String adminQrgType) {
+        this.adminQrgType = adminQrgType;
     }
 
     public void setStatus(Boolean status) {

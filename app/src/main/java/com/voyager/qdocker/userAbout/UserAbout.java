@@ -2,11 +2,15 @@ package com.voyager.qdocker.userAbout;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.voyager.qdocker.R;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -15,13 +19,21 @@ import butterknife.ButterKnife;
 
 public class UserAbout extends AppCompatActivity {
 
-
-
+    @BindView(R.id.userToolbarAboutPage)
+    Toolbar userToolbarAboutPage;
+    @BindView(R.id.tvUserAboutContent)
+    TextView tvUserAboutContent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.about_user);
         ButterKnife.bind(this);
+
+        setSupportActionBar(userToolbarAboutPage);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setTitle(getResources().getString(R.string.about));
+        userToolbarAboutPage.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
     }
 
     @Override

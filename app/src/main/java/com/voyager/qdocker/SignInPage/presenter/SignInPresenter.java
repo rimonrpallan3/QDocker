@@ -55,6 +55,8 @@ public class SignInPresenter implements ISignInPresenter{
     String userImageUrl = "";
     String app_version = "";
     String userMob ="";
+    String adminRegNo ="";
+    String adminQrgType ="";
     Map<String, Object> current_app_version = new HashMap<>();
     DatabaseReference mDatabase;
     String currentUser="";
@@ -161,6 +163,8 @@ public class SignInPresenter implements ISignInPresenter{
                         userEmailAdress = user.getEmail();
                         userImageUrl = String.valueOf(user.getPhotoUrl());
                         userMob = user.getPhoneNumber();
+                        adminRegNo = String.valueOf(FirebaseDatabase.getInstance().getReference("admin")
+                                .child(user.getUid()).child("adminRegNo"));
 
                         if(userImageUrl.equals("null"))
                             userImageUrl ="";
@@ -201,7 +205,7 @@ public class SignInPresenter implements ISignInPresenter{
                                                     .child(user.getUid()).updateChildren(current_app_version);
 
                                             FirebaseMessaging.getInstance().unsubscribeFromTopic("developer");
-                                            adminDetails = new AdminDetails(state, userId, userEmailAdress, userName, userImageUrl, userMob);
+                                            adminDetails = new AdminDetails(state, userId, userEmailAdress, userName, userImageUrl, userMob,"","");
                                             iSignInView.storeValueAdminPref(adminDetails);
                                             iSignInView.goSuddenLanding(adminDetails,currentUser);
                                         } else{
@@ -228,7 +232,7 @@ public class SignInPresenter implements ISignInPresenter{
 
                                                             FirebaseMessaging.getInstance().unsubscribeFromTopic("developer");
 
-                                                            adminDetails = new AdminDetails(state, userId, userEmailAdress, userName, userImageUrl, userMob);
+                                                            adminDetails = new AdminDetails(state, userId, userEmailAdress, userName, userImageUrl, userMob,"","");
                                                             iSignInView.storeValueAdminPref(adminDetails);
                                                             iSignInView.goSuddenLanding(adminDetails,currentUser);
                                                         }
@@ -390,7 +394,7 @@ public class SignInPresenter implements ISignInPresenter{
             userImageUrl = String.valueOf(user.getPhotoUrl());
             userMob = user.getPhoneNumber();
             if(currentUser.equals("admin")){
-                adminDetails = new AdminDetails(state, userId, userEmailAdress, userName, userImageUrl, userMob);
+                adminDetails = new AdminDetails(state, userId, userEmailAdress, userName, userImageUrl, userMob,"","");
                 iSignInView.goGetAdminDetails(adminDetails);
             }else if(currentUser.equals("user")){
                 urlPhoto = String.valueOf(user.getPhotoUrl());

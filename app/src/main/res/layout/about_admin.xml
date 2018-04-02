@@ -1,6 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-</FrameLayout>
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/adminToolbarAboutPage"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:elevation="4dp"
+        android:visibility="visible" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/tvAdminAboutContent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/userAboutContent"
+                android:layout_gravity="right"
+                android:ems="1"
+                android:layout_marginTop="@dimen/_20"
+                android:layout_marginLeft="@dimen/_20"
+                android:layout_marginRight="@dimen/_20"
+                android:paddingBottom="@dimen/_30"
+                android:gravity="right"
+                android:textSize="@dimen/_12"
+                android:typeface="serif"
+                android:textStyle="italic"/>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+</LinearLayout>

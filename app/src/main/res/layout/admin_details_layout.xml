@@ -13,7 +13,7 @@
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/adminId"
+            android:id="@+id/adminRegNo"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingLeft="@dimen/_40"
@@ -26,7 +26,7 @@
             android:layout_marginBottom="@dimen/_10"/>
 
         <EditText
-            android:id="@+id/adminQrCode"
+            android:id="@+id/adminQrgType"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/_10"
