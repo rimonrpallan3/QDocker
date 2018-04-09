@@ -122,46 +122,49 @@ public class UserViewDoc extends AppCompatActivity implements EasyPermissions.Pe
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
 
-            case FilePickerConst.REQUEST_CODE_DOC:
-                if (resultCode == Activity.RESULT_OK && data != null) {
-                    docPaths = new ArrayList<>();
-                    docLists = new ArrayList<>();
-                    docPaths.addAll(data.getStringArrayListExtra(FilePickerConst.KEY_SELECTED_DOCS));
-                    ArrayList<File> inFiles = new ArrayList<>();
-                    File directory;
-                    for(int i = 0; i < docPaths.size(); i++) {
-                        directory = new File(docPaths.get(i).toString());
-                        inFiles.add(directory);
+                case FilePickerConst.REQUEST_CODE_DOC:
+                    if (data != null) {
+                        if (resultCode == Activity.RESULT_OK && data != null) {
+                            docPaths = new ArrayList<>();
+                            docLists = new ArrayList<>();
+                            docPaths.addAll(data.getStringArrayListExtra(FilePickerConst.KEY_SELECTED_DOCS));
+                            ArrayList<File> inFiles = new ArrayList<>();
+                            File directory;
+                            for (int i = 0; i < docPaths.size(); i++) {
+                                directory = new File(docPaths.get(i).toString());
+                                inFiles.add(directory);
+                            }
+                            for (File f : inFiles) {
+                                DocList docList = new DocList();
+                                docList.setSelectedListDoc(inFiles);
+                                System.out.println("UserViewDoc onActivityResult for each Files name:  " + f.getName());
+                                System.out.println("UserViewDoc onActivityResult for each absolute path:  " + f.getAbsolutePath());
+                                docList.setDocFileName(f.getName());
+                                docList.setDocFileAbsolutePath(f.getAbsolutePath());
+                                docLists.add(docList);
+                            }
+                        }
+                    }else {
+                        System.out.println("UserViewDoc onActivityResult for each Files data: null ");
                     }
-                    for(File f:inFiles){
-                        DocList docList = new DocList();
-                        docList.setSelectedListDoc(inFiles);
-                        System.out.println("UserViewDoc onActivityResult for each Files name:  "+ f.getName());
-                        System.out.println("UserViewDoc onActivityResult for each absolute path:  "+ f.getAbsolutePath());
-                        docList.setDocFileName(f.getName());
-                        docList.setDocFileAbsolutePath(f.getAbsolutePath());
-                        docLists.add(docList);
-                    }
-                }
-                break;
+                    break;
         }
         addThemToView(docPaths,docLists);
     }
 
     private void addThemToView(ArrayList<String> docPaths,ArrayList<DocList> docLists) {
         ArrayList<String> filePaths = new ArrayList<>();
-        if (docPaths != null) filePaths.addAll(docPaths);
+        if (docPaths != null)
+            filePaths.addAll(docPaths);
         if (recycleViewUserUploadDoc != null) {
-            /*StaggeredGridLayoutManager layoutManager =
-                    new StaggeredGridLayoutManager(3, OrientationHelper.VERTICAL);
-            layoutManager.setGapStrategy(
-                    StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);*/
-            listFileAdapter = new ListFileAdapter(docLists,this);
-            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-            recycleViewUserUploadDoc.setLayoutManager(mLayoutManager);
-            recycleViewUserUploadDoc.setItemAnimator(new DefaultItemAnimator());
-            recycleViewUserUploadDoc.setAdapter(listFileAdapter);
-            recycleViewUserUploadDoc.setItemAnimator(new DefaultItemAnimator());
+            if(docLists!=null && docLists.size()>0) {
+                listFileAdapter = new ListFileAdapter(docLists, this);
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+                recycleViewUserUploadDoc.setLayoutManager(mLayoutManager);
+                recycleViewUserUploadDoc.setItemAnimator(new DefaultItemAnimator());
+                recycleViewUserUploadDoc.setAdapter(listFileAdapter);
+                recycleViewUserUploadDoc.setItemAnimator(new DefaultItemAnimator());
+            }
         }
 
         Toast.makeText(this, "Num of files selected: " + filePaths.size(), Toast.LENGTH_SHORT).show();
@@ -258,6 +261,8 @@ public class UserViewDoc extends AppCompatActivity implements EasyPermissions.Pe
             }
         }else {
             System.out.println("Please Select any one ");
+            Snackbar.make(findViewById(android.R.id.content),getResources().getString(R.string.snack_error_message_noList), Snackbar.LENGTH_LONG).show();
+
         }
 
     }

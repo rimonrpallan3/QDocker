@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">QDocker</string>
+    <string name="app_name">Document Valet</string>
 
     <!--Config File-->
     <string name="fireBaseUrl">https://qdocker-4fd2f.firebaseio.com</string>
@@ -37,17 +37,31 @@
     <string name="rationale_doc_picker">We need this pemission to read documents from device.</string>
     <string name="snackUploadSuccessMsg">Your upload iS successful. Please go to view upload page to see the uploaded files.</string>
     <string name="snackUploadUnSuccessMsg">Your upload iS Unsuccessful. Please Check Net Connections.</string>
+    <string name="snack_error_message_noList">Please Pick the required doc.</string>
+
+
+    <!--Email Details -->
+    <string name="email_subject">Feed Back</string>
+    <string name="email_content">Please Enter Ur Feed Back.</string>
+    <string name="email_dialog_heading">Send Email.</string>
+
+    <string name="email_1">nirmal@gmail.com</string>
+    <string-array name="emailAddresses">
+        <item>@string/email_1</item>
+    </string-array>
 
     <!--Nav Drawer Admin list -->
     <string name="adminProfile">Profile</string>
     <string name="adminSettings">Settings</string>
     <string name="adminAbout">About</string>
+    <string name="adminFeedBack">Feed Back</string>
     <string name="adminLogout">Logout</string>
 
     <!--Nav Drawer User list -->
     <string name="userProfile">Profile</string>
     <string name="userSettings">Settings</string>
     <string name="userAbout">About</string>
+    <string name="userFeedBack">Feed Back</string>
     <string name="userLogout">Logout</string>
 
 

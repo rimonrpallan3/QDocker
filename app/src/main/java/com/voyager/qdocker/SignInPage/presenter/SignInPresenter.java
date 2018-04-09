@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
@@ -16,9 +19,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.voyager.qdocker.R;
@@ -26,6 +31,8 @@ import com.voyager.qdocker.SignInPage.model.AdminDetails;
 import com.voyager.qdocker.SignInPage.model.IUserDetials;
 import com.voyager.qdocker.SignInPage.model.UserDetails;
 import com.voyager.qdocker.SignInPage.view.ISignInView;
+import com.voyager.qdocker.adminLanding.adapter.ListQRDocsAdapter;
+import com.voyager.qdocker.userViewDoc.model.UploadDocs;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,8 +65,9 @@ public class SignInPresenter implements ISignInPresenter{
     String adminRegNo ="";
     String adminQrgType ="";
     Map<String, Object> current_app_version = new HashMap<>();
-    DatabaseReference mDatabase;
     String currentUser="";
+    DatabaseReference mDatabaseUser;
+    DatabaseReference mDatabaseAdmin;
 
     public SignInPresenter(ISignInView iSignInView, FirebaseAuth mAuth, Activity activity, GoogleSignInClient mGoogleSignInClient, String currentUser) {
         this.iSignInView = iSignInView;
@@ -67,8 +75,8 @@ public class SignInPresenter implements ISignInPresenter{
         this.activity = activity;
         this.mGoogleSignInClient = mGoogleSignInClient;
         this.currentUser = currentUser;
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        startloginIn();
+        mDatabaseUser = FirebaseDatabase.getInstance().getReference("user");
+        mDatabaseAdmin = FirebaseDatabase.getInstance().getReference("admin");
     }
 
     /**
@@ -85,7 +93,6 @@ public class SignInPresenter implements ISignInPresenter{
         // [START_EXCLUDE silent]
         iSignInView.setLoader(View.VISIBLE);
         // [END_EXCLUDE]
-
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
@@ -95,59 +102,173 @@ public class SignInPresenter implements ISignInPresenter{
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            System.out.println("Login Anonymous success: currentUser: "+currentUser);
-                            updateUI(user,currentUser);
+                            System.out.println("Login Anonymous success: currentUser: " + currentUser);
+                            updateUI(user, currentUser);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Snackbar.make(activity.findViewById(android.R.id.content),activity.getResources().getString(R.string.snackErrorMsg), Snackbar.LENGTH_SHORT).show();
-                           /* Snackbar.make(getParent().findViewById(android.R.id.content),
-                                    getResources().getString(R.string.snackErrorMsg),
-                                    Snackbar.LENGTH_INDEFINITE)
-                                    .setAction(getResources().getString(R.string.snackOkBtn), new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            btnSignInGoogle.setVisibility(View.GONE);
-                                        }
-                                    }).show();*/
+                            Snackbar.make(activity.findViewById(android.R.id.content), activity.getResources().getString(R.string.snackErrorMsg), Snackbar.LENGTH_SHORT).show();
                             updateUI(null, currentUser);
                         }
-
                         // [START_EXCLUDE]
                         iSignInView.setLoader(View.GONE);
                         // [END_EXCLUDE]
                     }
                 });
     }
-   /* @Override
-    public void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+    public void firebaseAuthWithAnonymous(final GoogleSignInAccount acct ,final String currentUser) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
-        // [START_EXCLUDE silent]
-        iSignInView.setLoader(View.VISIBLE);
-        // [END_EXCLUDE]
 
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+        mAuth.getCurrentUser();
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
+        mAuth.getCurrentUser().linkWithCredential(credential)
                 .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        System.out.println("Login : login with google "+task.isSuccessful());
+                        System.out.println("Login Anonymous Linking: "+task.isSuccessful());
+                        Log.d(TAG, "linkWithCredential:onComplete:" + task.isSuccessful());
+
                         if (!task.isSuccessful()) {
-                            Snackbar.make(activity.findViewById(android.R.id.content),
-                                    activity.getResources().getString(R.string.snackErrorMsg),
-                                    Snackbar.LENGTH_INDEFINITE)
-                                    .setAction(activity.getResources().getString(R.string.snackOkBtn), new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            //sign_in_button.setVisibility(View.GONE);
-                                        }
-                                    }).show();
+                            System.out.println("Login initate login with google");
+                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                            user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Log.d(TAG, "User account deleted.");
+                                        System.out.println("onComplete User account deleted.");
+                                    }
+                                }
+                            });
+                            firebaseAuthWithGoogle(acct,currentUser);
                         }
 
                     }
                 });
-    }*/
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+    // [END auth_with_google]
+    @Override
+    public void updateUI(final FirebaseUser user,final String  currentUser) {
+        iSignInView.setLoader(View.GONE);
+        if (user != null) {
+            state = true;
+            userId = user.getUid();
+            userName = user.getDisplayName();
+            userEmailAdress = user.getEmail();
+            userImageUrl = String.valueOf(user.getPhotoUrl());
+            userMob = user.getPhoneNumber();
+            if(currentUser.equals("admin")){
+                mDatabaseAdmin
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
+                                ArrayList<String> allusersList = new ArrayList<>();
+                                for (com.google.firebase.database.DataSnapshot allusers : dataSnapshot.getChildren()) {
+                                    allusersList.add(allusers.getKey());
+                                }
+                                if (allusersList.contains(userId)) {
+                                    ValueEventListener eventListener = new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            if(!dataSnapshot.exists()) {
+                                                adminDetails = new AdminDetails(state, userId, userEmailAdress, userName, userImageUrl, userMob,"","");
+                                                iSignInView.goGetAdminDetails(adminDetails);
+                                            }else{
+                                                AdminDetails adminDetails = dataSnapshot.getValue(AdminDetails.class);
+                                                iSignInView.storeValueAdminPref(adminDetails);
+                                                iSignInView.goSuddenLanding(adminDetails,currentUser);
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {}
+                                    };
+                                    mDatabaseAdmin.child(userId).addListenerForSingleValueEvent(eventListener);
+                                }
+                            }
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+
+            }else if(currentUser.equals("user")){
+                mDatabaseUser
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
+                                ArrayList<String> allusersList = new ArrayList<>();
+                                for (com.google.firebase.database.DataSnapshot allusers : dataSnapshot.getChildren()) {
+                                    allusersList.add(allusers.getKey());
+                                }
+                                if (allusersList.contains(userId)) {
+                                    ValueEventListener eventListener = new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            if(!dataSnapshot.exists()) {
+                                                urlPhoto = String.valueOf(user.getPhotoUrl());
+                                                userDetails =new UserDetails(state, userId, userEmailAdress, userName, userImageUrl, userMob);
+                                                mDatabaseUser.child(userId).setValue(userDetails);
+                                                iSignInView.storeValuePref(userDetails);
+                                                System.out.println("SignInPresenter updateUI");
+                                                iSignInView.gotLanding();
+                                            }else{
+                                                UserDetails userDetails = dataSnapshot.getValue(UserDetails.class);
+                                                iSignInView.storeValuePref(userDetails);
+                                                iSignInView.gotLanding();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {}
+                                    };
+                                    mDatabaseUser.child(userId).addListenerForSingleValueEvent(eventListener);
+                                }
+                            }
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+            }
+
+        } else {
+            System.out.println("Something went wrong SignInPresenter updateUI");
+        }
+    }
+/*
+
+    private void signOut() {
+        // Firebase sign out
+        mAuth.signOut();
+
+        // Google sign out
+        mGoogleSignInClient.signOut().addOnCompleteListener(activity,
+                new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        updateUI(null);
+                    }
+                });
+    }
+
+    private void revokeAccess() {
+        // Firebase sign out
+        mAuth.signOut();
+
+        // Google revoke access
+        mGoogleSignInClient.revokeAccess().addOnCompleteListener(activity,
+                new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        updateUI(null);
+                    }
+                });
+    }
+
 
     public void startloginIn(){
 
@@ -349,95 +470,6 @@ public class SignInPresenter implements ISignInPresenter{
 
     }
 
-
-    public void firebaseAuthWithAnonymous(final GoogleSignInAccount acct ,final String currentUser) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
-
-        mAuth.getCurrentUser();
-        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        mAuth.getCurrentUser().linkWithCredential(credential)
-                .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        System.out.println("Login Anonymous Linking: "+task.isSuccessful());
-                        Log.d(TAG, "linkWithCredential:onComplete:" + task.isSuccessful());
-
-                        if (!task.isSuccessful()) {
-                            System.out.println("Login initate login with google");
-                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-                            user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Log.d(TAG, "User account deleted.");
-                                        System.out.println("onComplete User account deleted.");
-                                    }
-                                }
-                            });
-                            firebaseAuthWithGoogle(acct,currentUser);
-                        }
-
-                    }
-                });
-        mAuth.addAuthStateListener(mAuthListener);
-    }
-    // [END auth_with_google]
-    @Override
-    public void updateUI(FirebaseUser user,String  currentUser) {
-        iSignInView.setLoader(View.GONE);
-        if (user != null) {
-            state = true;
-            userId = user.getUid();
-            userName = user.getDisplayName();
-            userEmailAdress = user.getEmail();
-            userImageUrl = String.valueOf(user.getPhotoUrl());
-            userMob = user.getPhoneNumber();
-            if(currentUser.equals("admin")){
-                adminDetails = new AdminDetails(state, userId, userEmailAdress, userName, userImageUrl, userMob,"","");
-                iSignInView.goGetAdminDetails(adminDetails);
-            }else if(currentUser.equals("user")){
-                urlPhoto = String.valueOf(user.getPhotoUrl());
-                userDetails =new UserDetails(state, userId, userEmailAdress, userName, userImageUrl, userMob);
-                mDatabase.child("user").child(userId).setValue(userDetails);
-                iSignInView.storeValuePref(userDetails);
-                System.out.println("SignInPresenter updateUI");
-                iSignInView.gotLanding();
-            }
-
-        } else {
-            System.out.println("Something went wrong SignInPresenter updateUI");
-        }
-    }
-/*
-
-    private void signOut() {
-        // Firebase sign out
-        mAuth.signOut();
-
-        // Google sign out
-        mGoogleSignInClient.signOut().addOnCompleteListener(activity,
-                new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        updateUI(null);
-                    }
-                });
-    }
-
-    private void revokeAccess() {
-        // Firebase sign out
-        mAuth.signOut();
-
-        // Google revoke access
-        mGoogleSignInClient.revokeAccess().addOnCompleteListener(activity,
-                new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        updateUI(null);
-                    }
-                });
-    }
 */
 
 }

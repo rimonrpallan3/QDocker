@@ -25,7 +25,6 @@ import butterknife.ButterKnife;
 
 public class UserProfile extends AppCompatActivity {
 
-    @BindView(R.id.userProfileToolBar)
     Toolbar userProfileToolBar;
     @BindView(R.id.userProfilePic)
     CircleImageView userProfilePic;
@@ -87,7 +86,7 @@ public class UserProfile extends AppCompatActivity {
         } else {
             System.out.println("AdminLanding -- userDetails- No data------ ");
         }
-
+        userProfileToolBar = (Toolbar) findViewById(R.id.userProfileToolBar);
         setSupportActionBar(userProfileToolBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getResources().getString(R.string.app_name));

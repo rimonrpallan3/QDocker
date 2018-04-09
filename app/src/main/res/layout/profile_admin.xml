@@ -7,6 +7,7 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/adminProfileToolBar"
         android:layout_width="match_parent"
+        android:background="@color/colorPrimary"
         android:elevation="4dp"
         android:layout_height="?attr/actionBarSize">
 
@@ -96,7 +97,7 @@
                 <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/user" />
+                android:src="@drawable/ic_confirmation_number" />
 
                 <TextView
                 android:id="@+id/adminRegNo"
@@ -116,7 +117,7 @@
                 <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/user" />
+                android:src="@drawable/ic_group_work" />
 
                 <TextView
                 android:id="@+id/adminOrgType"

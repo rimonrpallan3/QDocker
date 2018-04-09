@@ -288,6 +288,19 @@ public class UserLanding extends AppCompatActivity  {
 
                         return true;
 
+                    case R.id.userFeed:
+                        String[] emailAddresses = getResources().getStringArray(R.array.emailAddresses);
+                        String feedback = getResources().getString(R.string.email_subject);
+                        String content = getResources().getString(R.string.email_content);
+                        String dialogHeading = getResources().getString(R.string.email_dialog_heading);
+                        intent = new Intent(Intent.ACTION_SEND);
+                        intent.setType("text/html");
+                        intent.putExtra(Intent.EXTRA_EMAIL, emailAddresses);
+                        intent.putExtra(Intent.EXTRA_SUBJECT, feedback);
+                        intent.putExtra(Intent.EXTRA_TEXT, content);
+                        startActivity(Intent.createChooser(intent, dialogHeading));
+                        return true;
+
                     case R.id.userLogout:
                         mDatabase.child("user").child(userDetails.getUserId()).child("status").setValue(false);
                         editor.remove(getResources().getString(R.string.sharedPrefFileUserName));

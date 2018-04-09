@@ -288,6 +288,19 @@ public class AdminLanding extends AppCompatActivity {
 
                         return true;
 
+                    case R.id.adminFeed:
+                        String[] emailAddresses = getResources().getStringArray(R.array.emailAddresses);
+                        String feedback = getResources().getString(R.string.email_subject);
+                        String content = getResources().getString(R.string.email_content);
+                        String dialogHeading = getResources().getString(R.string.email_dialog_heading);
+                        intent = new Intent(Intent.ACTION_SEND);
+                        intent.setType("text/html");
+                        intent.putExtra(Intent.EXTRA_EMAIL, emailAddresses);
+                        intent.putExtra(Intent.EXTRA_SUBJECT, feedback);
+                        intent.putExtra(Intent.EXTRA_TEXT, content);
+                        startActivity(Intent.createChooser(intent, dialogHeading));
+                        return true;
+
                     case R.id.adminLogout:
                         mDatabase.child("admin").child(adminDetails.getUserId()).child("status").setValue(false);
                         editor.remove(getResources().getString(R.string.sharedPrefFileAdmin));

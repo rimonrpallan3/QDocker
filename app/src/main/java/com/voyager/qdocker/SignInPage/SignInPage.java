@@ -33,6 +33,7 @@ import com.voyager.qdocker.SignInPage.model.UserDetails;
 import com.voyager.qdocker.SignInPage.presenter.ISignInPresenter;
 import com.voyager.qdocker.SignInPage.presenter.SignInPresenter;
 import com.voyager.qdocker.SignInPage.view.ISignInView;
+import com.voyager.qdocker.adminLanding.AdminLanding;
 
 /**
  * Created by rimon on 17-03-2018.
@@ -182,7 +183,7 @@ public class SignInPage extends AppCompatActivity implements GoogleApiClient.OnC
     public void goSuddenLanding(Object object, String currentUser) {
         if(currentUser.equals("admin")){
             adminDetails = (AdminDetails) object;
-            Intent intent = new Intent(this, AdminAddAddDetails.class);
+            Intent intent = new Intent(this, AdminLanding.class);
             intent.putExtra("AdminDetails", adminDetails);
             startActivity(intent);
             finish();

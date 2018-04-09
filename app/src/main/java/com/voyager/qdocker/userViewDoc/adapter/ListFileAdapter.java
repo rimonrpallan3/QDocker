@@ -75,7 +75,12 @@ public class ListFileAdapter extends RecyclerView.Adapter<ListFileAdapter.MyView
 
     @Override
     public int getItemCount() {
-        return docLists.size();
+        if(docLists!=null) {
+            return docLists.size();
+        }else {
+            return 0;
+        }
+
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

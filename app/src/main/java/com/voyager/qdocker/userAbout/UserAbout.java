@@ -19,7 +19,6 @@ import butterknife.ButterKnife;
 
 public class UserAbout extends AppCompatActivity {
 
-    @BindView(R.id.userToolbarAboutPage)
     Toolbar userToolbarAboutPage;
     @BindView(R.id.tvUserAboutContent)
     TextView tvUserAboutContent;
@@ -28,7 +27,7 @@ public class UserAbout extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.about_user);
         ButterKnife.bind(this);
-
+        userToolbarAboutPage = (Toolbar) findViewById(R.id.userToolbarAboutPage);
         setSupportActionBar(userToolbarAboutPage);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);

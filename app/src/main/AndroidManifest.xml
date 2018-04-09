@@ -52,10 +52,10 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan|adjustResize" />
         <activity
-        android:name="com.voyager.qdocker.adminLanding.AdminLanding"
-        android:screenOrientation="portrait"
-        android:theme="@style/AppTheme"
-        android:windowSoftInputMode="adjustPan|adjustResize" />
+            android:name="com.voyager.qdocker.adminLanding.AdminLanding"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan|adjustResize" />
         <activity
             android:name="com.voyager.qdocker.adminAbout.AdminAbout"
             android:screenOrientation="portrait"

@@ -21,6 +21,18 @@
             android:icon="@drawable/info_icon"
             android:title="@string/adminAbout" />
     </group>
+
+    <group
+        android:id="@+id/menuFeed"
+        android:checkableBehavior="single">
+
+
+        <item
+            android:id="@+id/adminFeed"
+            android:checked="false"
+            android:icon="@drawable/ic_feedback"
+            android:title="@string/adminFeedBack" />
+    </group>
     <group
         android:id="@+id/menuLogout"
         android:checkableBehavior="single">

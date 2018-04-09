@@ -18,7 +18,10 @@ public class AdminDetails implements Parcelable {
     String adminRegNo;
     String adminQrgType;
 
-    public AdminDetails(Boolean status, String userId, String email, String userName, String userPhotoUrl, String usermob,String adminRegNo, String adminQrgType) {
+    public AdminDetails() {
+    }
+
+    public AdminDetails(Boolean status, String userId, String email, String userName, String userPhotoUrl, String usermob, String adminRegNo, String adminQrgType) {
         this.status = status;
         this.userId = userId;
         this.email = email;

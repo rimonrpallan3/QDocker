@@ -16,7 +16,10 @@ public class UserDetails implements IUserDetials,Parcelable{
     Boolean status;
     String usermob;
 
-    public UserDetails(Boolean status,String userId, String email, String userName, String userPhotoUrl, String usermob) {
+    public UserDetails() {
+    }
+
+    public UserDetails(Boolean status, String userId, String email, String userName, String userPhotoUrl, String usermob) {
         this.status =status;
         this.userId = userId;
         this.email = email;
