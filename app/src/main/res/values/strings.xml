@@ -1,12 +1,10 @@
 <resources>
-    <string name="app_name">Document Valet</string>
+    <string name="app_name">Document Wallet</string>
 
     <!--Config File-->
     <string name="fireBaseUrl">https://qdocker-4fd2f.firebaseio.com</string>
     <string name="fireBaseStorageUrl">gs://qdocker-4fd2f.appspot.com</string>
     <string name="about">About</string>
-
-
 
     <!--Sign In Page -->
     <string name="bottomDescription"><b>Why Sign Up?</b> \n By signing up with us, users will be able to follow and interact with their favorite churches better and will help us provide you with the best user experience.</string>
@@ -46,7 +44,7 @@
     <string name="email_dialog_heading">Send Email.</string>
 
     <string name="email_1">nirmal@gmail.com</string>
-    <string-array name="emailAddresses">
+    <string-array name="emailAddresses2">
         <item>@string/email_1</item>
     </string-array>
 
