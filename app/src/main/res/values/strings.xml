@@ -44,7 +44,7 @@
     <string name="email_dialog_heading">Send Email.</string>
 
     <string name="email_1">nirmal@gmail.com</string>
-    <string-array name="emailAddresses2">
+    <string-array name="emailAddresses">
         <item>@string/email_1</item>
     </string-array>
 

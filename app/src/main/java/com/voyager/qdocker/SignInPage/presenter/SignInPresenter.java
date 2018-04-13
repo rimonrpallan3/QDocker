@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -152,6 +153,7 @@ public class SignInPresenter implements ISignInPresenter{
     @Override
     public void updateUI(final FirebaseUser user,final String  currentUser) {
         iSignInView.setLoader(View.GONE);
+        System.out.println("SignInPresenter user : "+user);
         if (user != null) {
             state = true;
             userId = user.getUid();
@@ -186,6 +188,18 @@ public class SignInPresenter implements ISignInPresenter{
                                         public void onCancelled(DatabaseError databaseError) {}
                                     };
                                     mDatabaseAdmin.child(userId).addListenerForSingleValueEvent(eventListener);
+                                }else {
+                                    adminDetails =new AdminDetails(state, userId, userEmailAdress, userName, userImageUrl, userMob,"","");
+                                    FirebaseDatabase.getInstance()
+                                            .getReference("admin")
+                                            .child(userId)
+                                            .setValue(adminDetails)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    iSignInView.goGetAdminDetails(adminDetails);
+                                            }
+                                            });
                                 }
                             }
                             @Override
@@ -226,7 +240,21 @@ public class SignInPresenter implements ISignInPresenter{
                                         public void onCancelled(DatabaseError databaseError) {}
                                     };
                                     mDatabaseUser.child(userId).addListenerForSingleValueEvent(eventListener);
+                                }else {
+                                    userDetails =new UserDetails(state, userId, userEmailAdress, userName, userImageUrl, userMob);
+                                    FirebaseDatabase.getInstance()
+                                            .getReference("user")
+                                            .child(userId)
+                                            .setValue(userDetails)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    iSignInView.storeValuePref(userDetails);
+                                                    iSignInView.gotLanding();
+                                                }
+                                            });
                                 }
+
                             }
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
@@ -236,9 +264,37 @@ public class SignInPresenter implements ISignInPresenter{
             }
 
         } else {
+            if(currentUser.equals("admin")){
+
+            }else if(currentUser.equals("user")){
+
+            }
+
             System.out.println("Something went wrong SignInPresenter updateUI");
         }
     }
+    /*private void firebaseAuthWithAnonymous(final GoogleSignInAccount acct) {
+        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        mAuth.getCurrentUser().linkWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        System.out.println("Login Anonymous Linking: "+task.isSuccessful());
+                        Log.d(TAG, "linkWithCredential:onComplete:" + task.isSuccessful());
+
+                        if (!task.isSuccessful()) {
+                            Toast.makeText(activity, "Failed: Login with Google",
+                                    Toast.LENGTH_SHORT).show();
+                            System.out.println("Login initate login with google");
+                            firebaseAuthWithGoogle(acct);
+                        }
+
+                    }
+                });
+    }*/
+
+
 /*
 
     private void signOut() {

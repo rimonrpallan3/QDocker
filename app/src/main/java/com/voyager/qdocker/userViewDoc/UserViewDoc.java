@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -83,6 +84,8 @@ public class UserViewDoc extends AppCompatActivity implements EasyPermissions.Pe
     RecyclerView recycleViewUserUploadDoc;
     @BindView(R.id.uploadLoader)
     FrameLayout uploadLoader;
+    @BindView(R.id.uploadDocToFireBase)
+    Button uploadDocToFireBase;
     ListFileAdapter listFileAdapter;
     FirebaseStorage storage;
     StorageReference storageRef;
@@ -336,27 +339,34 @@ public class UserViewDoc extends AppCompatActivity implements EasyPermissions.Pe
     @Override
     public void hideLoader(List<String> fileDoneList, int position) {
         String fileDone = fileDoneList.get(position);
+        System.out.println("UserViewDoc hideLoader  currentSelectedItems.size(): " + currentSelectedItems.size());
+        System.out.println("UserViewDoc hideLoader  position: " + position);
         if(fileDone.equals("uploading")){
             uploadLoader.setVisibility(View.VISIBLE);
         } else if(fileDone.equals("done")){
             Snackbar.make(findViewById(android.R.id.content),getResources().getString(R.string.snackUploadSuccessMsg), Snackbar.LENGTH_SHORT).show();
             uploadLoader.setVisibility(View.GONE);
             String databseRef = "user/"+userDetails.getUserId()+"/doc/"+uploadId;
-            iUserViewDocPresenter.generateQrCode(databseRef,userDetails);
+
+            if(position==currentSelectedItems.size()-1) {
+                iUserViewDocPresenter.generateQrCode(databseRef, userDetails);
+            }
         }
     }
 
     @Override
     public void generateQrCodeActivity(String databseRef, UserDetails userDetails) {
-        System.out.println("UserViewDoc generateQrCodeActivity  userDetails: "+userDetails.getUserId());
-        System.out.println("UserViewDoc generateQrCodeActivity  databseRef: "+databseRef);
-        Intent intent;
-        intent = new Intent(this, UserQrCodeRenerate.class);
-        intent.putExtra("databseRef",databseRef);
-        intent.putExtra("UserDetails", userDetails);
-        intent.putExtra("QrResult", qrResult);
-        startActivity(intent);
-        finish();
+        if(uploadLoader.getVisibility() == View.GONE) {
+            System.out.println("UserViewDoc generateQrCodeActivity  userDetails: " + userDetails.getUserId());
+            System.out.println("UserViewDoc generateQrCodeActivity  databseRef: " + databseRef);
+            Intent intent;
+            intent = new Intent(this, UserQrCodeRenerate.class);
+            intent.putExtra("databseRef", databseRef);
+            intent.putExtra("UserDetails", userDetails);
+            intent.putExtra("QrResult", qrResult);
+            startActivity(intent);
+            finish();
+        }
     }
 
     @Override
