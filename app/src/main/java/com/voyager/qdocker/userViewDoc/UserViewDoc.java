@@ -356,10 +356,11 @@ public class UserViewDoc extends AppCompatActivity implements EasyPermissions.Pe
             uploadLoader.setVisibility(View.VISIBLE);
         } else if(fileDone.equals("done")){
             Snackbar.make(findViewById(android.R.id.content),getResources().getString(R.string.snackUploadSuccessMsg), Snackbar.LENGTH_SHORT).show();
-            uploadLoader.setVisibility(View.GONE);
             String databseRef = "user/"+userDetails.getUserId()+"/doc/"+uploadId;
 
             if(position==currentSelectedItems.size()-1) {
+                uploadLoader.setVisibility(View.GONE);
+                uploadDocToFireBase.setEnabled(false);
                 iUserViewDocPresenter.generateQrCode(databseRef, userDetails);
             }
         }
