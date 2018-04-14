@@ -6,6 +6,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,15 +32,18 @@ import com.voyager.qdocker.adminLanding.presenter.AdminLandingFrgPresenter;
 import com.voyager.qdocker.adminLanding.presenter.IAdminLandingFrgPresenter;
 import com.voyager.qdocker.adminLanding.view.IAdminLandingFrgView;
 import com.voyager.qdocker.common.Config;
+import com.voyager.qdocker.common.NetworkDetector;
 import com.voyager.qdocker.custom.qrmodule.activity.QrScannerActivity;
 import com.voyager.qdocker.userViewDoc.model.UploadDocs;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
 
@@ -47,7 +52,7 @@ import pub.devrel.easypermissions.EasyPermissions;
  */
 
 @SuppressLint("ValidFragment")
-public class AdminLandingFragment extends Fragment implements IAdminLandingFrgView {
+public class AdminLandingFragment extends Fragment implements IAdminLandingFrgView,EasyPermissions.PermissionCallbacks {
 
     public String urlOutPut = "";
     Activity activity;
@@ -63,6 +68,7 @@ public class AdminLandingFragment extends Fragment implements IAdminLandingFrgVi
     ArrayList<UploadDocs> uploadDocsList;
     IAdminLandingFrgPresenter iAdminLandingFrgPresenter;
     String[] perms2 = {Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private static final int RC_CAMERA_PERM = 122;
 
     public AdminLandingFragment(Activity activity) {
         this.activity = activity;
@@ -86,11 +92,26 @@ public class AdminLandingFragment extends Fragment implements IAdminLandingFrgVi
 
         return rootView;
     }
-
+    @AfterPermissionGranted(RC_CAMERA_PERM)
     @OnClick(R.id.scanQrCode)
     void onScanBtnClick() {
         System.out.println("AdminLandingFragment onScanBtnClick");
-        startActivityForResult(new Intent(getActivity(), QrScannerActivity.class), QrScannerActivity.QR_REQUEST_CODE);
+        if (EasyPermissions.hasPermissions(getContext(), Manifest.permission.CAMERA)) {
+            // Have permission, do the thing!
+            if(NetworkDetector.haveNetworkConnection(getActivity())){
+                //Snackbar.make(findViewById(android.R.id.content), getResources().getString(R.string.snack_error_network_available), Snackbar.LENGTH_SHORT).show();
+                startActivityForResult(new Intent(getActivity(), QrScannerActivity.class), QrScannerActivity.QR_REQUEST_CODE);
+            }else {
+                Snackbar.make(activity.findViewById(android.R.id.content), getResources().getString(R.string.snack_error_network), Snackbar.LENGTH_LONG).show();
+            }
+
+        } else {
+            // Request one permission
+            EasyPermissions.requestPermissions(this, getString(R.string.error_message_permission_camera),
+                    RC_CAMERA_PERM, Manifest.permission.CAMERA);
+        }
+
+
     }
 
 
@@ -145,6 +166,16 @@ public class AdminLandingFragment extends Fragment implements IAdminLandingFrgVi
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // EasyPermissions handles the request result.
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
 
     @Override
     public void onDestroyView() {
@@ -170,5 +201,15 @@ public class AdminLandingFragment extends Fragment implements IAdminLandingFrgVi
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
+
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
+
     }
 }

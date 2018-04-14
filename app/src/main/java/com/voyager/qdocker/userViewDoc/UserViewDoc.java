@@ -39,6 +39,7 @@ import com.voyager.qdocker.UserLanding.UserLanding;
 import com.voyager.qdocker.UserQrCodeGenrater.UserQrCodeRenerate;
 import com.voyager.qdocker.adminLanding.model.QrResult;
 import com.voyager.qdocker.common.Config;
+import com.voyager.qdocker.common.NetworkDetector;
 import com.voyager.qdocker.userAbout.UserAbout;
 import com.voyager.qdocker.userViewDoc.adapter.ListFileAdapter;
 import com.voyager.qdocker.userViewDoc.model.DocList;
@@ -219,54 +220,64 @@ public class UserViewDoc extends AppCompatActivity implements EasyPermissions.Pe
     @OnClick(R.id.uploadDocToFireBase)
     public void uploadDocToFireBase(){
         System.out.println("Please uploadDocToFireBase in: ");
-        if(currentSelectedItems!=null){
-            mDatabase.child(userDetails.getUserId()).child("doc").removeValue();
-            System.out.println("Please uploadDocToFireBase currentSelectedItems: "+currentSelectedItems.size());
-            for(int i = 0; i < currentSelectedItems.size();i++){
-                uploadLoader.setVisibility(View.VISIBLE);
-                final DocList docList = currentSelectedItems.get(i);
-                System.out.println("Please uploadDocToFireBase currentSelectedItems: "+currentSelectedItems.get(i));
-                UploadTask uploadTask;
-                Uri file = Uri.fromFile(new File(docList.getDocFileAbsolutePath()));
-                StorageReference riversRef = storageRef.child(userDetails.getUserId()).child("doc").child(file.getLastPathSegment());
-                uploadTask = riversRef.putFile(file);
-                fileDoneList.add("uploading");
-                final int finalI = i;
-                // Register observers to listen for when the download is done or if it fails
-                final int position = i;
-                uploadTask.addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // Handle unsuccessful uploads
-                        System.out.println("UserViewDoc uploadDocToFireBase onFailure");
-                        Snackbar.make(findViewById(android.R.id.content),getResources().getString(R.string.snackUploadUnSuccessMsg), Snackbar.LENGTH_SHORT).show();
-                        fileDoneList.remove(finalI);
-                        fileDoneList.add(finalI, "done");
-                        iUserViewDocPresenter.setUplodLoder(fileDoneList, position);
-                    }
-                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                        UploadDocs uploadDocs = new UploadDocs(docList.getDocFileName(),taskSnapshot.getDownloadUrl().toString());
-                        uploadId = mDatabase.push().getKey();
-                        qrResult.setInnerChild("doc");
-                        qrResult.setQrUserId(userDetails.getUserId());
+        if(NetworkDetector.haveNetworkConnection(this)){
 
-                        mDatabase.child(userDetails.getUserId()).child("doc").child(uploadId).setValue(uploadDocs);
-                        System.out.println("UserViewDoc uploadDocToFireBase onSuccess downloadUrl: "+downloadUrl);
-                        fileDoneList.remove(finalI);
-                        fileDoneList.add(finalI, "done");
-                        iUserViewDocPresenter.setUplodLoder(fileDoneList, position);
-                    }
-                });
+            if(currentSelectedItems!=null){
+                mDatabase.child(userDetails.getUserId()).child("doc").removeValue();
+                System.out.println("Please uploadDocToFireBase currentSelectedItems: "+currentSelectedItems.size());
+                for(int i = 0; i < currentSelectedItems.size();i++){
+                    uploadLoader.setVisibility(View.VISIBLE);
+                    final DocList docList = currentSelectedItems.get(i);
+                    System.out.println("Please uploadDocToFireBase currentSelectedItems: "+currentSelectedItems.get(i));
+                    UploadTask uploadTask;
+                    Uri file = Uri.fromFile(new File(docList.getDocFileAbsolutePath()));
+                    StorageReference riversRef = storageRef.child(userDetails.getUserId()).child("doc").child(file.getLastPathSegment());
+                    uploadTask = riversRef.putFile(file);
+                    fileDoneList.add("uploading");
+                    final int finalI = i;
+                    // Register observers to listen for when the download is done or if it fails
+                    final int position = i;
+                    uploadTask.addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            // Handle unsuccessful uploads
+                            System.out.println("UserViewDoc uploadDocToFireBase onFailure");
+                            Snackbar.make(findViewById(android.R.id.content),getResources().getString(R.string.snackUploadUnSuccessMsg), Snackbar.LENGTH_SHORT).show();
+                            fileDoneList.remove(finalI);
+                            fileDoneList.add(finalI, "done");
+                            iUserViewDocPresenter.setUplodLoder(fileDoneList, position);
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                            Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                            UploadDocs uploadDocs = new UploadDocs(docList.getDocFileName(),taskSnapshot.getDownloadUrl().toString());
+                            uploadId = mDatabase.push().getKey();
+                            qrResult.setInnerChild("doc");
+                            qrResult.setQrUserId(userDetails.getUserId());
+
+                            mDatabase.child(userDetails.getUserId()).child("doc").child(uploadId).setValue(uploadDocs);
+                            System.out.println("UserViewDoc uploadDocToFireBase onSuccess downloadUrl: "+downloadUrl);
+                            fileDoneList.remove(finalI);
+                            fileDoneList.add(finalI, "done");
+                            iUserViewDocPresenter.setUplodLoder(fileDoneList, position);
+                        }
+                    });
+                }
+            }else {
+                System.out.println("Please Select any one ");
+                Snackbar.make(findViewById(android.R.id.content),getResources().getString(R.string.snack_error_message_noList), Snackbar.LENGTH_LONG).show();
+
             }
+
+
+
         }else {
-            System.out.println("Please Select any one ");
-            Snackbar.make(findViewById(android.R.id.content),getResources().getString(R.string.snack_error_message_noList), Snackbar.LENGTH_LONG).show();
+            Snackbar.make(findViewById(android.R.id.content), getResources().getString(R.string.snack_error_network), Snackbar.LENGTH_LONG).show();
 
         }
+
 
     }
 
@@ -311,7 +322,7 @@ public class UserViewDoc extends AppCompatActivity implements EasyPermissions.Pe
         }
     }
 
-    @AfterPermissionGranted(RC_FILE_PICKER_PERM)
+        @AfterPermissionGranted(RC_FILE_PICKER_PERM)
     public void pickDoc() {
         if (EasyPermissions.hasPermissions(this, FilePickerConst.PERMISSIONS_FILE_PICKER)) {
             onPickDoc();

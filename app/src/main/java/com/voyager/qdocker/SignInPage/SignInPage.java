@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -21,8 +22,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.voyager.qdocker.adminAddDetails.AdminAddAddDetails;
@@ -34,6 +33,7 @@ import com.voyager.qdocker.SignInPage.presenter.ISignInPresenter;
 import com.voyager.qdocker.SignInPage.presenter.SignInPresenter;
 import com.voyager.qdocker.SignInPage.view.ISignInView;
 import com.voyager.qdocker.adminLanding.AdminLanding;
+import com.voyager.qdocker.common.NetworkDetector;
 
 /**
  * Created by rimon on 17-03-2018.
@@ -79,6 +79,8 @@ public class SignInPage extends AppCompatActivity implements GoogleApiClient.OnC
         }else if(userExtra!=null&& userExtra.length()>0){
             currentUser = userExtra;
         }
+
+
 
         System.out.println("SignInPage currentUser : "+currentUser);
         btnSignInGoogle = (LinearLayout) findViewById(R.id.btnSignInGoogle);
@@ -133,9 +135,12 @@ public class SignInPage extends AppCompatActivity implements GoogleApiClient.OnC
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 iSignInPresenter.firebaseAuthWithGoogle(account,currentUser);
+                System.out.println("-----------GoogleSignInAccount onActivityResult");
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
+                btnSignInGoogle.setEnabled(true);
                 Log.w(TAG, "Google sign in failed", e);
+                System.out.println("-----------GoogleSignInAccount onActivityResult error : " +e.getMessage());
                 // ...
             }
         }
@@ -209,7 +214,15 @@ public class SignInPage extends AppCompatActivity implements GoogleApiClient.OnC
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.btnSignInGoogle) {
-            signIn();
+            if(NetworkDetector.haveNetworkConnection(this)){
+                //Snackbar.make(findViewById(android.R.id.content), getResources().getString(R.string.snack_error_network_available), Snackbar.LENGTH_SHORT).show();
+                btnSignInGoogle.setEnabled(false);
+                signIn();
+            }else {
+                Snackbar.make(findViewById(android.R.id.content), getResources().getString(R.string.snack_error_network), Snackbar.LENGTH_LONG).show();
+
+            }
+
         }
     }
 
